@@ -44,80 +44,70 @@ const requireAdmin = (req, res, next) => {
 app.post('/api/login', (req, res) => {
   const { username, password } = req.body;
 
-  db.get('SELECT * FROM users WHERE username = ?', [username], (err, user) => {
-    if (err) {
-      return res.status(500).json({ message: 'Kesalahan server' });
+  const user = db.getUserByUsername(username);
+
+  if (!user || !bcrypt.compareSync(password, user.password)) {
+    return res.status(401).json({ message: 'Username atau password salah' });
+  }
+
+  const token = jwt.sign(
+    { id: user.id, username: user.username, role: user.role, name: user.name },
+    JWT_SECRET,
+    { expiresIn: '24h' }
+  );
+
+  res.json({
+    token,
+    user: {
+      id: user.id,
+      username: user.username,
+      name: user.name,
+      role: user.role
     }
-
-    if (!user || !bcrypt.compareSync(password, user.password)) {
-      return res.status(401).json({ message: 'Username atau password salah' });
-    }
-
-    const token = jwt.sign(
-      { id: user.id, username: user.username, role: user.role, name: user.name },
-      JWT_SECRET,
-      { expiresIn: '24h' }
-    );
-
-    res.json({
-      token,
-      user: {
-        id: user.id,
-        username: user.username,
-        name: user.name,
-        role: user.role
-      }
-    });
   });
 });
 
 // Get all items
 app.get('/api/items', authenticateToken, (req, res) => {
-  db.all('SELECT * FROM items ORDER BY name', (err, items) => {
-    if (err) {
-      return res.status(500).json({ message: 'Kesalahan mengambil data barang' });
-    }
-    res.json(items);
-  });
+  const items = db.getAllItems();
+  res.json(items);
 });
 
 // Add item (admin only)
 app.post('/api/items', authenticateToken, requireAdmin, (req, res) => {
   const { name, description, stock } = req.body;
 
-  db.run('INSERT INTO items (name, description, stock) VALUES (?, ?, ?)',
-    [name, description, stock], function(err) {
-      if (err) {
-        return res.status(500).json({ message: 'Kesalahan menambah barang' });
-      }
-      res.json({ id: this.lastID, message: 'Barang berhasil ditambahkan' });
-    });
+  const newItem = db.addItem({ name, description, stock });
+  if (newItem) {
+    res.json({ id: newItem.id, message: 'Barang berhasil ditambahkan' });
+  } else {
+    res.status(500).json({ message: 'Kesalahan menambah barang' });
+  }
 });
 
 // Update item (admin only)
 app.put('/api/items/:id', authenticateToken, requireAdmin, (req, res) => {
   const { name, description, stock } = req.body;
-  const { id } = req.params;
+  const id = parseInt(req.params.id);
 
-  db.run('UPDATE items SET name = ?, description = ?, stock = ? WHERE id = ?',
-    [name, description, stock, id], function(err) {
-      if (err) {
-        return res.status(500).json({ message: 'Kesalahan mengubah barang' });
-      }
-      res.json({ message: 'Barang berhasil diubah' });
-    });
+  const success = db.updateItem(id, { name, description, stock });
+  if (success) {
+    res.json({ message: 'Barang berhasil diubah' });
+  } else {
+    res.status(500).json({ message: 'Kesalahan mengubah barang' });
+  }
 });
 
 // Delete item (admin only)
 app.delete('/api/items/:id', authenticateToken, requireAdmin, (req, res) => {
-  const { id } = req.params;
+  const id = parseInt(req.params.id);
 
-  db.run('DELETE FROM items WHERE id = ?', [id], function(err) {
-    if (err) {
-      return res.status(500).json({ message: 'Kesalahan menghapus barang' });
-    }
+  const success = db.deleteItem(id);
+  if (success) {
     res.json({ message: 'Barang berhasil dihapus' });
-  });
+  } else {
+    res.status(500).json({ message: 'Kesalahan menghapus barang' });
+  }
 });
 
 // Borrow item
@@ -125,178 +115,149 @@ app.post('/api/borrow', authenticateToken, (req, res) => {
   const { item_id, quantity, purpose } = req.body;
   const user_id = req.user.id;
 
-  // Check if item has enough stock
-  db.get('SELECT * FROM items WHERE id = ?', [item_id], (err, item) => {
-    if (err) {
-      return res.status(500).json({ message: 'Kesalahan mengambil data barang' });
+  const item = db.getItemById(item_id);
+  if (!item) {
+    return res.status(404).json({ message: 'Barang tidak ditemukan' });
+  }
+
+  if (item.stock < quantity) {
+    return res.status(400).json({ message: 'Stok tidak mencukupi' });
+  }
+
+  const newBorrowing = db.addBorrowing({ user_id, item_id, quantity, purpose });
+  if (newBorrowing) {
+    const stockUpdated = db.updateItemStock(item_id, -quantity);
+    if (stockUpdated) {
+      res.json({ message: 'Peminjaman berhasil dicatat' });
+    } else {
+      res.status(500).json({ message: 'Kesalahan mengupdate stok' });
     }
-
-    if (!item) {
-      return res.status(404).json({ message: 'Barang tidak ditemukan' });
-    }
-
-    if (item.stock < quantity) {
-      return res.status(400).json({ message: 'Stok tidak mencukupi' });
-    }
-
-    // Start transaction
-    db.serialize(() => {
-      db.run('BEGIN TRANSACTION');
-
-      // Insert borrowing record
-      db.run('INSERT INTO borrowings (user_id, item_id, quantity, purpose) VALUES (?, ?, ?, ?)',
-        [user_id, item_id, quantity, purpose], function(err) {
-          if (err) {
-            db.run('ROLLBACK');
-            return res.status(500).json({ message: 'Kesalahan mencatat peminjaman' });
-          }
-
-          // Update item stock
-          db.run('UPDATE items SET stock = stock - ? WHERE id = ?',
-            [quantity, item_id], function(err) {
-              if (err) {
-                db.run('ROLLBACK');
-                return res.status(500).json({ message: 'Kesalahan mengupdate stok' });
-              }
-
-              db.run('COMMIT');
-              res.json({ message: 'Peminjaman berhasil dicatat' });
-            });
-        });
-    });
-  });
+  } else {
+    res.status(500).json({ message: 'Kesalahan mencatat peminjaman' });
+  }
 });
 
 // Return item
 app.post('/api/return', authenticateToken, (req, res) => {
   const { borrowing_id, condition_note } = req.body;
 
-  // Get borrowing record
-  db.get('SELECT * FROM borrowings WHERE id = ? AND user_id = ? AND status = "borrowed"',
-    [borrowing_id, req.user.id], (err, borrowing) => {
-      if (err) {
-        return res.status(500).json({ message: 'Kesalahan mengambil data peminjaman' });
-      }
+  const borrowing = db.getBorrowingById(borrowing_id);
+  if (!borrowing || borrowing.user_id !== req.user.id || borrowing.status !== 'borrowed') {
+    return res.status(404).json({ message: 'Data peminjaman tidak ditemukan' });
+  }
 
-      if (!borrowing) {
-        return res.status(404).json({ message: 'Data peminjaman tidak ditemukan' });
-      }
+  const updateSuccess = db.updateBorrowing(borrowing_id, {
+    return_date: new Date().toISOString(),
+    condition_note,
+    status: 'returned'
+  });
 
-      // Start transaction
-      db.serialize(() => {
-        db.run('BEGIN TRANSACTION');
-
-        // Update borrowing record
-        db.run('UPDATE borrowings SET return_date = CURRENT_TIMESTAMP, condition_note = ?, status = "returned" WHERE id = ?',
-          [condition_note, borrowing_id], function(err) {
-            if (err) {
-              db.run('ROLLBACK');
-              return res.status(500).json({ message: 'Kesalahan mengupdate data pengembalian' });
-            }
-
-            // Update item stock
-            db.run('UPDATE items SET stock = stock + ? WHERE id = ?',
-              [borrowing.quantity, borrowing.item_id], function(err) {
-                if (err) {
-                  db.run('ROLLBACK');
-                  return res.status(500).json({ message: 'Kesalahan mengupdate stok' });
-                }
-
-                db.run('COMMIT');
-                res.json({ message: 'Pengembalian berhasil dicatat' });
-              });
-          });
-      });
-    });
+  if (updateSuccess) {
+    const stockUpdated = db.updateItemStock(borrowing.item_id, borrowing.quantity);
+    if (stockUpdated) {
+      res.json({ message: 'Pengembalian berhasil dicatat' });
+    } else {
+      res.status(500).json({ message: 'Kesalahan mengupdate stok' });
+    }
+  } else {
+    res.status(500).json({ message: 'Kesalahan mengupdate data pengembalian' });
+  }
 });
 
 // Get user's borrowing history
 app.get('/api/my-borrowings', authenticateToken, (req, res) => {
-  const query = `
-    SELECT b.*, i.name as item_name, i.description as item_description
-    FROM borrowings b
-    JOIN items i ON b.item_id = i.id
-    WHERE b.user_id = ?
-    ORDER BY b.borrow_date DESC
-  `;
+  const borrowings = db.getBorrowingsByUserId(req.user.id);
+  const items = db.getAllItems();
+  
+  const enrichedBorrowings = borrowings.map(borrowing => {
+    const item = items.find(i => i.id === borrowing.item_id);
+    return {
+      ...borrowing,
+      item_name: item ? item.name : 'Unknown',
+      item_description: item ? item.description : 'Unknown'
+    };
+  }).sort((a, b) => new Date(b.borrow_date) - new Date(a.borrow_date));
 
-  db.all(query, [req.user.id], (err, borrowings) => {
-    if (err) {
-      return res.status(500).json({ message: 'Kesalahan mengambil riwayat peminjaman' });
-    }
-    res.json(borrowings);
-  });
+  res.json(enrichedBorrowings);
 });
 
 // Get all borrowings (admin only)
 app.get('/api/all-borrowings', authenticateToken, requireAdmin, (req, res) => {
-  const query = `
-    SELECT b.*, i.name as item_name, u.name as user_name
-    FROM borrowings b
-    JOIN items i ON b.item_id = i.id
-    JOIN users u ON b.user_id = u.id
-    ORDER BY b.borrow_date DESC
-  `;
+  const borrowings = db.getAllBorrowings();
+  const items = db.getAllItems();
+  const users = db.getAllUsers();
+  
+  const enrichedBorrowings = borrowings.map(borrowing => {
+    const item = items.find(i => i.id === borrowing.item_id);
+    const user = users.find(u => u.id === borrowing.user_id);
+    return {
+      ...borrowing,
+      item_name: item ? item.name : 'Unknown',
+      user_name: user ? user.name : 'Unknown'
+    };
+  }).sort((a, b) => new Date(b.borrow_date) - new Date(a.borrow_date));
 
-  db.all(query, (err, borrowings) => {
-    if (err) {
-      return res.status(500).json({ message: 'Kesalahan mengambil riwayat peminjaman' });
-    }
-    res.json(borrowings);
-  });
+  res.json(enrichedBorrowings);
 });
 
 // Get all users (admin only)
 app.get('/api/users', authenticateToken, requireAdmin, (req, res) => {
-  db.all('SELECT id, username, name, role, created_at FROM users ORDER BY name', (err, users) => {
-    if (err) {
-      return res.status(500).json({ message: 'Kesalahan mengambil data pengguna' });
-    }
-    res.json(users);
-  });
+  const users = db.getAllUsers().map(user => ({
+    id: user.id,
+    username: user.username,
+    name: user.name,
+    role: user.role,
+    created_at: user.created_at
+  }));
+  res.json(users);
 });
 
 // Add user (admin only)
 app.post('/api/users', authenticateToken, requireAdmin, (req, res) => {
   const { username, password, name, role } = req.body;
-  const hashedPassword = bcrypt.hashSync(password, 10);
 
-  db.run('INSERT INTO users (username, password, name, role) VALUES (?, ?, ?, ?)',
-    [username, hashedPassword, name, role], function(err) {
-      if (err) {
-        if (err.code === 'SQLITE_CONSTRAINT') {
-          return res.status(400).json({ message: 'Username sudah digunakan' });
-        }
-        return res.status(500).json({ message: 'Kesalahan menambah pengguna' });
-      }
-      res.json({ id: this.lastID, message: 'Pengguna berhasil ditambahkan' });
-    });
+  // Check if username already exists
+  const existingUser = db.getUserByUsername(username);
+  if (existingUser) {
+    return res.status(400).json({ message: 'Username sudah digunakan' });
+  }
+
+  const hashedPassword = bcrypt.hashSync(password, 10);
+  const newUser = db.addUser({ username, password: hashedPassword, name, role });
+
+  if (newUser) {
+    res.json({ id: newUser.id, message: 'Pengguna berhasil ditambahkan' });
+  } else {
+    res.status(500).json({ message: 'Kesalahan menambah pengguna' });
+  }
 });
 
 // Delete user (admin only)
 app.delete('/api/users/:id', authenticateToken, requireAdmin, (req, res) => {
-  const { id } = req.params;
+  const id = parseInt(req.params.id);
 
-  // Prevent deleting admin
-  if (id == req.user.id) {
+  if (id === req.user.id) {
     return res.status(400).json({ message: 'Tidak dapat menghapus akun sendiri' });
   }
 
-  db.run('DELETE FROM users WHERE id = ?', [id], function(err) {
-    if (err) {
-      return res.status(500).json({ message: 'Kesalahan menghapus pengguna' });
-    }
+  const success = db.deleteUser(id);
+  if (success) {
     res.json({ message: 'Pengguna berhasil dihapus' });
-  });
+  } else {
+    res.status(500).json({ message: 'Kesalahan menghapus pengguna' });
+  }
 });
 
 // Initialize database and start server
 initDatabase().then(() => {
   app.listen(PORT, () => {
-    console.log(`Server berjalan di port ${PORT}`);
-    console.log('Login admin: username=admin, password=admin123');
-    console.log('Login user: username=mahasiswa1, password=user123');
+    console.log(`🚀 Server berjalan di port ${PORT}`);
+    console.log('📋 Akun Demo:');
+    console.log('   👨‍💼 Admin: username=admin, password=admin123');
+    console.log('   👨‍🎓 User 1: username=mahasiswa1, password=user123');
+    console.log('   👩‍🎓 User 2: username=mahasiswa2, password=user123');
+    console.log('💾 Database: JSON file (server/data.json)');
   });
 }).catch(err => {
-  console.error('Kesalahan inisialisasi database:', err);
+  console.error('❌ Kesalahan inisialisasi database:', err);
 });

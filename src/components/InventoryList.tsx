@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { User } from '../App';
 import BorrowForm from './BorrowForm';
 import ReturnForm from './ReturnForm';
-import { Package, Plus, Minus } from 'lucide-react';
+import { Package, Plus, Minus, Search, Filter, Box } from 'lucide-react';
 
 interface Item {
   id: number;
@@ -17,10 +17,13 @@ interface InventoryListProps {
 
 const InventoryList: React.FC<InventoryListProps> = ({ user }) => {
   const [items, setItems] = useState<Item[]>([]);
+  const [filteredItems, setFilteredItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState(true);
   const [showBorrowForm, setShowBorrowForm] = useState(false);
   const [showReturnForm, setShowReturnForm] = useState(false);
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [stockFilter, setStockFilter] = useState('all');
 
   const fetchItems = async () => {
     try {
@@ -33,6 +36,7 @@ const InventoryList: React.FC<InventoryListProps> = ({ user }) => {
       if (response.ok) {
         const data = await response.json();
         setItems(data);
+        setFilteredItems(data);
       }
     } catch (err) {
       console.error('Error fetching items:', err);
@@ -43,6 +47,21 @@ const InventoryList: React.FC<InventoryListProps> = ({ user }) => {
   useEffect(() => {
     fetchItems();
   }, []);
+
+  useEffect(() => {
+    let filtered = items.filter(item =>
+      item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.description.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    if (stockFilter === 'available') {
+      filtered = filtered.filter(item => item.stock > 0);
+    } else if (stockFilter === 'unavailable') {
+      filtered = filtered.filter(item => item.stock === 0);
+    }
+
+    setFilteredItems(filtered);
+  }, [items, searchTerm, stockFilter]);
 
   const handleBorrow = (item: Item) => {
     setSelectedItem(item);
@@ -65,64 +84,126 @@ const InventoryList: React.FC<InventoryListProps> = ({ user }) => {
   };
 
   if (loading) {
-    return <div className="text-center py-8">Memuat data inventaris...</div>;
+    return (
+      <div className="text-center py-12">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+        <p className="text-gray-600">Memuat data inventaris...</p>
+      </div>
+    );
   }
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">Daftar Inventaris</h2>
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Daftar Inventaris</h2>
+          <p className="text-gray-600">Kelola dan pinjam barang inventaris organisasi</p>
+        </div>
         <button
           onClick={handleReturn}
-          className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 flex items-center"
+          className="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 py-3 rounded-lg hover:from-green-700 hover:to-emerald-700 flex items-center font-semibold shadow-lg transition-all duration-200"
         >
           <Minus className="h-4 w-4 mr-2" />
           Kembalikan Barang
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {items.map((item) => (
-          <div key={item.id} className="bg-gray-50 rounded-lg p-6 border">
-            <div className="flex items-start justify-between">
-              <div className="flex-1">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">{item.name}</h3>
-                <p className="text-gray-600 mb-4">{item.description}</p>
-                
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center">
-                    <Package className="h-5 w-5 text-gray-500 mr-2" />
-                    <span className="text-sm text-gray-700">
-                      Stok: <span className="font-semibold">{item.stock}</span>
-                    </span>
-                  </div>
-                  
-                  <button
-                    onClick={() => handleBorrow(item)}
-                    disabled={item.stock === 0}
-                    className={`px-4 py-2 rounded-md text-sm font-medium flex items-center ${
-                      item.stock > 0
-                        ? 'bg-blue-600 text-white hover:bg-blue-700'
-                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                    }`}
-                  >
-                    <Plus className="h-4 w-4 mr-1" />
-                    Pinjam
-                  </button>
-                </div>
-              </div>
-            </div>
+      {/* Search and Filter */}
+      <div className="bg-gray-50 rounded-xl p-4 mb-6 border border-gray-200">
+        <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex-1 relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+            <input
+              type="text"
+              placeholder="Cari barang..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
           </div>
-        ))}
+          <div className="relative">
+            <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+            <select
+              value={stockFilter}
+              onChange={(e) => setStockFilter(e.target.value)}
+              className="pl-10 pr-8 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-white"
+            >
+              <option value="all">Semua Barang</option>
+              <option value="available">Tersedia</option>
+              <option value="unavailable">Tidak Tersedia</option>
+            </select>
+          </div>
+        </div>
       </div>
 
-      {items.length === 0 && (
-        <div className="text-center py-12">
-          <Package className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-          <p className="text-gray-500">Belum ada barang dalam inventaris</p>
+      {/* Items Grid */}
+      {filteredItems.length === 0 ? (
+        <div className="text-center py-16">
+          <Box className="h-20 w-20 text-gray-300 mx-auto mb-4" />
+          <p className="text-gray-500 text-lg mb-2">
+            {searchTerm || stockFilter !== 'all' ? 'Tidak ada barang yang sesuai filter' : 'Belum ada barang dalam inventaris'}
+          </p>
+          {(searchTerm || stockFilter !== 'all') && (
+            <button
+              onClick={() => {
+                setSearchTerm('');
+                setStockFilter('all');
+              }}
+              className="text-blue-600 hover:text-blue-700 font-medium"
+            >
+              Reset Filter
+            </button>
+          )}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredItems.map((item) => (
+            <div key={item.id} className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm hover:shadow-lg transition-all duration-200 hover:border-blue-200">
+              <div className="flex items-start justify-between mb-4">
+                <div className="bg-blue-50 rounded-lg p-3">
+                  <Package className="h-6 w-6 text-blue-600" />
+                </div>
+                <div className={`px-3 py-1 rounded-full text-sm font-medium ${
+                  item.stock > 0 
+                    ? 'bg-green-100 text-green-800' 
+                    : 'bg-red-100 text-red-800'
+                }`}>
+                  {item.stock > 0 ? 'Tersedia' : 'Habis'}
+                </div>
+              </div>
+
+              <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">{item.name}</h3>
+              <p className="text-gray-600 mb-4 text-sm line-clamp-3">{item.description}</p>
+              
+              <div className="flex items-center justify-between">
+                <div className="flex items-center text-gray-700">
+                  <div className="bg-gray-100 rounded-lg px-3 py-1">
+                    <span className="text-sm font-medium">
+                      Stok: <span className="font-bold text-gray-900">{item.stock}</span>
+                    </span>
+                  </div>
+                </div>
+                
+                <button
+                  onClick={() => handleBorrow(item)}
+                  disabled={item.stock === 0}
+                  className={`px-4 py-2 rounded-lg text-sm font-semibold flex items-center transition-all duration-200 ${
+                    item.stock > 0
+                      ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 shadow-md hover:shadow-lg'
+                      : 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                  }`}
+                >
+                  <Plus className="h-4 w-4 mr-1" />
+                  Pinjam
+                </button>
+              </div>
+            </div>
+          ))}
         </div>
       )}
 
+      {/* Modals */}
       {showBorrowForm && selectedItem && (
         <BorrowForm
           item={selectedItem}
