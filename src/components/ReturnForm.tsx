@@ -1,53 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { User } from '../App';
 import { X } from 'lucide-react';
-
-interface Borrowing {
-  id: number;
-  item_name: string;
-  item_description: string;
-  quantity: number;
-  purpose: string;
-  borrow_date: string;
-  status: string;
-}
+import { Borrowing, getBorrowings, updateBorrowing, getItems, saveItems } from '../utils/storage';
 
 interface ReturnFormProps {
-  user: User;
   onSuccess: () => void;
   onCancel: () => void;
 }
 
-const ReturnForm: React.FC<ReturnFormProps> = ({ user, onSuccess, onCancel }) => {
+const ReturnForm: React.FC<ReturnFormProps> = ({ onSuccess, onCancel }) => {
   const [borrowings, setBorrowings] = useState<Borrowing[]>([]);
   const [selectedBorrowing, setSelectedBorrowing] = useState('');
   const [conditionNote, setConditionNote] = useState('');
   const [loading, setLoading] = useState(false);
-  const [fetchLoading, setFetchLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    fetchBorrowings();
+    const allBorrowings = getBorrowings();
+    const activeBorrowings = allBorrowings.filter(b => b.status === 'borrowed');
+    setBorrowings(activeBorrowings);
   }, []);
-
-  const fetchBorrowings = async () => {
-    try {
-      const response = await fetch('http://localhost:3001/api/my-borrowings', {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        const activeBorrowings = data.filter((b: Borrowing) => b.status === 'borrowed');
-        setBorrowings(activeBorrowings);
-      }
-    } catch (err) {
-      setError('Kesalahan mengambil data peminjaman');
-    }
-    setFetchLoading(false);
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,41 +26,38 @@ const ReturnForm: React.FC<ReturnFormProps> = ({ user, onSuccess, onCancel }) =>
     setError('');
 
     try {
-      const response = await fetch('http://localhost:3001/api/return', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        },
-        body: JSON.stringify({
-          borrowing_id: selectedBorrowing,
-          condition_note: conditionNote,
-        }),
+      const borrowingId = parseInt(selectedBorrowing);
+      const borrowing = borrowings.find(b => b.id === borrowingId);
+      
+      if (!borrowing) {
+        setError('Data peminjaman tidak ditemukan');
+        setLoading(false);
+        return;
+      }
+
+      // Update borrowing record
+      updateBorrowing(borrowingId, {
+        return_date: new Date().toISOString(),
+        condition_note: conditionNote,
+        status: 'returned'
       });
 
-      const data = await response.json();
+      // Update item stock
+      const items = getItems();
+      const updatedItems = items.map(item => 
+        item.id === borrowing.item_id 
+          ? { ...item, stock: item.stock + borrowing.quantity }
+          : item
+      );
+      saveItems(updatedItems);
 
-      if (response.ok) {
-        onSuccess();
-      } else {
-        setError(data.message);
-      }
+      onSuccess();
     } catch (err) {
-      setError('Kesalahan koneksi ke server');
+      setError('Terjadi kesalahan saat memproses pengembalian');
     }
 
     setLoading(false);
   };
-
-  if (fetchLoading) {
-    return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
-          <div className="text-center py-8">Memuat data peminjaman...</div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -136,7 +104,7 @@ const ReturnForm: React.FC<ReturnFormProps> = ({ user, onSuccess, onCancel }) =>
                   <option value="">-- Pilih Barang --</option>
                   {borrowings.map((borrowing) => (
                     <option key={borrowing.id} value={borrowing.id}>
-                      {borrowing.item_name} (x{borrowing.quantity}) - {new Date(borrowing.borrow_date).toLocaleDateString('id-ID')}
+                      {borrowing.item_name} (x{borrowing.quantity}) - {borrowing.borrower_name} - {new Date(borrowing.borrow_date).toLocaleDateString('id-ID')}
                     </option>
                   ))}
                 </select>

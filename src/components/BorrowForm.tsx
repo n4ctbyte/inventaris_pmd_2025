@@ -1,12 +1,6 @@
 import React, { useState } from 'react';
 import { X, Package, User, Calendar, FileText } from 'lucide-react';
-
-interface Item {
-  id: number;
-  name: string;
-  description: string;
-  stock: number;
-}
+import { Item, addBorrowing, getItems, saveItems } from '../utils/storage';
 
 interface BorrowFormProps {
   item: Item;
@@ -17,6 +11,7 @@ interface BorrowFormProps {
 const BorrowForm: React.FC<BorrowFormProps> = ({ item, onSuccess, onCancel }) => {
   const [quantity, setQuantity] = useState(1);
   const [purpose, setPurpose] = useState('');
+  const [borrowerName, setBorrowerName] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -26,28 +21,36 @@ const BorrowForm: React.FC<BorrowFormProps> = ({ item, onSuccess, onCancel }) =>
     setError('');
 
     try {
-      const response = await fetch('http://localhost:3001/api/borrow', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        },
-        body: JSON.stringify({
-          item_id: item.id,
-          quantity,
-          purpose,
-        }),
+      // Check if stock is still available
+      const currentItems = getItems();
+      const currentItem = currentItems.find(i => i.id === item.id);
+      
+      if (!currentItem || currentItem.stock < quantity) {
+        setError('Stok tidak mencukupi');
+        setLoading(false);
+        return;
+      }
+
+      // Add borrowing record
+      addBorrowing({
+        item_id: item.id,
+        item_name: item.name,
+        quantity,
+        purpose,
+        borrower_name: borrowerName
       });
 
-      const data = await response.json();
+      // Update item stock
+      const updatedItems = currentItems.map(i => 
+        i.id === item.id 
+          ? { ...i, stock: i.stock - quantity }
+          : i
+      );
+      saveItems(updatedItems);
 
-      if (response.ok) {
-        onSuccess();
-      } else {
-        setError(data.message);
-      }
+      onSuccess();
     } catch (err) {
-      setError('Kesalahan koneksi ke server');
+      setError('Terjadi kesalahan saat memproses peminjaman');
     }
 
     setLoading(false);
@@ -102,6 +105,21 @@ const BorrowForm: React.FC<BorrowFormProps> = ({ item, onSuccess, onCancel }) =>
             <div>
               <label className="flex items-center text-gray-700 text-sm font-semibold mb-3">
                 <User className="h-4 w-4 mr-2 text-gray-500" />
+                Nama Peminjam
+              </label>
+              <input
+                type="text"
+                value={borrowerName}
+                onChange={(e) => setBorrowerName(e.target.value)}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                placeholder="Masukkan nama lengkap peminjam"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="flex items-center text-gray-700 text-sm font-semibold mb-3">
+                <Package className="h-4 w-4 mr-2 text-gray-500" />
                 Jumlah yang Dipinjam
               </label>
               <input

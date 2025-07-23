@@ -1,21 +1,20 @@
 import React, { useState } from 'react';
-import { User } from '../App';
 import InventoryList from './InventoryList';
 import BorrowingHistory from './BorrowingHistory';
-import AdminPanel from './AdminPanel';
-import { Package, History, Settings, Sparkles } from 'lucide-react';
+import ItemManagement from './ItemManagement';
+import { Package, History, Settings, LogOut, Sparkles } from 'lucide-react';
 
 interface DashboardProps {
-  user: User;
+  onLogout: () => void;
 }
 
-const Dashboard: React.FC<DashboardProps> = ({ user }) => {
+const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
   const [activeTab, setActiveTab] = useState('inventory');
 
   const tabs = [
     { id: 'inventory', label: 'Inventaris', icon: Package, color: 'blue' },
     { id: 'history', label: 'Riwayat', icon: History, color: 'green' },
-    ...(user.role === 'admin' ? [{ id: 'admin', label: 'Admin Panel', icon: Settings, color: 'purple' }] : []),
+    { id: 'manage', label: 'Kelola Barang', icon: Settings, color: 'purple' },
   ];
 
   const getTabStyles = (tab: any, isActive: boolean) => {
@@ -34,7 +33,34 @@ const Dashboard: React.FC<DashboardProps> = ({ user }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50">
+    <div className="min-h-screen">
+      {/* Navbar */}
+      <nav className="bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 text-white shadow-xl border-b border-blue-500">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between h-16">
+            <div className="flex items-center">
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-2 mr-4">
+                <Package className="h-8 w-8 text-white" />
+              </div>
+              <div>
+                <h1 className="text-xl font-bold">Inventaris Permuridhis</h1>
+                <p className="text-sm text-blue-100 hidden sm:block">Persatuan Mahasiswa-Mahasiswi UNRI Buddhis</p>
+              </div>
+            </div>
+            
+            <div className="flex items-center">
+              <button
+                onClick={onLogout}
+                className="bg-white/10 hover:bg-white/20 backdrop-blur-sm px-4 py-2 rounded-lg transition-all duration-200 flex items-center font-medium border border-white/20 hover:border-white/30"
+              >
+                <LogOut className="h-4 w-4 mr-2" />
+                <span className="hidden sm:inline">Keluar</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </nav>
+
       <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
         {/* Welcome Header */}
         <div className="mb-8">
@@ -42,12 +68,10 @@ const Dashboard: React.FC<DashboardProps> = ({ user }) => {
             <div className="flex items-center justify-between">
               <div>
                 <h1 className="text-2xl sm:text-3xl font-bold mb-2">
-                  Selamat datang, {user.name}! 👋
+                  Sistem Inventaris Permuridhis 📦
                 </h1>
                 <p className="text-blue-100 text-sm sm:text-base">
-                  {user.role === 'admin' 
-                    ? 'Kelola inventaris dan pantau aktivitas peminjaman' 
-                    : 'Pinjam barang yang Anda butuhkan untuk kegiatan'}
+                  Kelola inventaris organisasi dengan mudah dan efisien
                 </p>
               </div>
               <div className="hidden sm:block">
@@ -73,11 +97,6 @@ const Dashboard: React.FC<DashboardProps> = ({ user }) => {
                   >
                     <Icon className="h-5 w-5 mr-2" />
                     {tab.label}
-                    {tab.id === 'admin' && (
-                      <span className="ml-2 bg-purple-200 text-purple-800 text-xs px-2 py-1 rounded-full">
-                        Admin
-                      </span>
-                    )}
                   </button>
                 );
               })}
@@ -86,9 +105,9 @@ const Dashboard: React.FC<DashboardProps> = ({ user }) => {
 
           {/* Tab Content */}
           <div className="p-6 sm:p-8">
-            {activeTab === 'inventory' && <InventoryList user={user} />}
-            {activeTab === 'history' && <BorrowingHistory user={user} />}
-            {activeTab === 'admin' && user.role === 'admin' && <AdminPanel />}
+            {activeTab === 'inventory' && <InventoryList />}
+            {activeTab === 'history' && <BorrowingHistory />}
+            {activeTab === 'manage' && <ItemManagement />}
           </div>
         </div>
       </div>

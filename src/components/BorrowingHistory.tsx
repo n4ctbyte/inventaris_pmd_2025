@@ -1,59 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { User } from '../App';
 import { Calendar, Package, ArrowRight } from 'lucide-react';
+import { Borrowing, getBorrowings } from '../utils/storage';
 
-interface Borrowing {
-  id: number;
-  item_name: string;
-  item_description: string;
-  quantity: number;
-  purpose: string;
-  borrow_date: string;
-  return_date?: string;
-  condition_note?: string;
-  status: 'borrowed' | 'returned';
-}
-
-interface BorrowingHistoryProps {
-  user: User;
-}
-
-const BorrowingHistory: React.FC<BorrowingHistoryProps> = ({ user }) => {
+const BorrowingHistory: React.FC = () => {
   const [borrowings, setBorrowings] = useState<Borrowing[]>([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchBorrowings();
+    const allBorrowings = getBorrowings();
+    const sortedBorrowings = allBorrowings.sort((a, b) => 
+      new Date(b.borrow_date).getTime() - new Date(a.borrow_date).getTime()
+    );
+    setBorrowings(sortedBorrowings);
   }, []);
-
-  const fetchBorrowings = async () => {
-    try {
-      const endpoint = user.role === 'admin' ? '/api/all-borrowings' : '/api/my-borrowings';
-      const response = await fetch(`http://localhost:3001${endpoint}`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setBorrowings(data);
-      }
-    } catch (err) {
-      console.error('Error fetching borrowings:', err);
-    }
-    setLoading(false);
-  };
-
-  if (loading) {
-    return <div className="text-center py-8">Memuat riwayat peminjaman...</div>;
-  }
 
   return (
     <div>
-      <h2 className="text-2xl font-bold text-gray-900 mb-6">
-        {user.role === 'admin' ? 'Semua Riwayat Peminjaman' : 'Riwayat Peminjaman Saya'}
-      </h2>
+      <h2 className="text-2xl font-bold text-gray-900 mb-6">Riwayat Peminjaman</h2>
 
       {borrowings.length === 0 ? (
         <div className="text-center py-12">
@@ -81,21 +43,17 @@ const BorrowingHistory: React.FC<BorrowingHistoryProps> = ({ user }) => {
                     </span>
                   </div>
 
-                  <p className="text-gray-600 mb-3">{borrowing.item_description}</p>
-
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                     <div>
+                      <p className="text-gray-700">
+                        <strong>Peminjam:</strong> {borrowing.borrower_name}
+                      </p>
                       <p className="text-gray-700">
                         <strong>Jumlah:</strong> {borrowing.quantity}
                       </p>
                       <p className="text-gray-700">
                         <strong>Tujuan:</strong> {borrowing.purpose}
                       </p>
-                      {user.role === 'admin' && (borrowing as any).user_name && (
-                        <p className="text-gray-700">
-                          <strong>Peminjam:</strong> {(borrowing as any).user_name}
-                        </p>
-                      )}
                     </div>
 
                     <div>

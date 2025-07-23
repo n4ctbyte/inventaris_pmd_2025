@@ -1,47 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { User } from '../App';
 import BorrowForm from './BorrowForm';
 import ReturnForm from './ReturnForm';
 import { Package, Plus, Minus, Search, Filter, Box } from 'lucide-react';
+import { getItems, Item } from '../utils/storage';
 
-interface Item {
-  id: number;
-  name: string;
-  description: string;
-  stock: number;
-}
-
-interface InventoryListProps {
-  user: User;
-}
-
-const InventoryList: React.FC<InventoryListProps> = ({ user }) => {
+const InventoryList: React.FC = () => {
   const [items, setItems] = useState<Item[]>([]);
   const [filteredItems, setFilteredItems] = useState<Item[]>([]);
-  const [loading, setLoading] = useState(true);
   const [showBorrowForm, setShowBorrowForm] = useState(false);
   const [showReturnForm, setShowReturnForm] = useState(false);
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [stockFilter, setStockFilter] = useState('all');
 
-  const fetchItems = async () => {
-    try {
-      const response = await fetch('http://localhost:3001/api/items', {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setItems(data);
-        setFilteredItems(data);
-      }
-    } catch (err) {
-      console.error('Error fetching items:', err);
-    }
-    setLoading(false);
+  const fetchItems = () => {
+    const itemsData = getItems();
+    setItems(itemsData);
+    setFilteredItems(itemsData);
   };
 
   useEffect(() => {
@@ -82,15 +57,6 @@ const InventoryList: React.FC<InventoryListProps> = ({ user }) => {
     setShowReturnForm(false);
     fetchItems();
   };
-
-  if (loading) {
-    return (
-      <div className="text-center py-12">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-        <p className="text-gray-600">Memuat data inventaris...</p>
-      </div>
-    );
-  }
 
   return (
     <div>
@@ -217,7 +183,6 @@ const InventoryList: React.FC<InventoryListProps> = ({ user }) => {
 
       {showReturnForm && (
         <ReturnForm
-          user={user}
           onSuccess={handleReturnSuccess}
           onCancel={() => setShowReturnForm(false)}
         />
