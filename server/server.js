@@ -1,12 +1,33 @@
 const express = require('express');
 const cors = require('cors');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
 const { db, initDatabase } = require('./database');
 
 const app = express();
 const PORT = 3001;
-const JWT_SECRET = 'your-secret-key-here';
+
+// Simple JWT alternative - just use base64 encoding for demo
+const createToken = (user) => {
+  const payload = {
+    id: user.id,
+    username: user.username,
+    name: user.name,
+    role: user.role,
+    exp: Date.now() + (24 * 60 * 60 * 1000) // 24 hours
+  };
+  return Buffer.from(JSON.stringify(payload)).toString('base64');
+};
+
+const verifyToken = (token) => {
+  try {
+    const payload = JSON.parse(Buffer.from(token, 'base64').toString());
+    if (payload.exp < Date.now()) {
+      return null; // Token expired
+    }
+    return payload;
+  } catch {
+    return null;
+  }
+};
 
 // Middleware
 app.use(cors());
@@ -21,13 +42,13 @@ const authenticateToken = (req, res, next) => {
     return res.status(401).json({ message: 'Token akses diperlukan' });
   }
 
-  jwt.verify(token, JWT_SECRET, (err, user) => {
-    if (err) {
-      return res.status(403).json({ message: 'Token tidak valid' });
-    }
-    req.user = user;
-    next();
-  });
+  const user = verifyToken(token);
+  if (!user) {
+    return res.status(403).json({ message: 'Token tidak valid atau expired' });
+  }
+
+  req.user = user;
+  next();
 };
 
 // Admin middleware
@@ -46,15 +67,11 @@ app.post('/api/login', (req, res) => {
 
   const user = db.getUserByUsername(username);
 
-  if (!user || !bcrypt.compareSync(password, user.password)) {
+  if (!user || !db.verifyPassword(password, user.password)) {
     return res.status(401).json({ message: 'Username atau password salah' });
   }
 
-  const token = jwt.sign(
-    { id: user.id, username: user.username, role: user.role, name: user.name },
-    JWT_SECRET,
-    { expiresIn: '24h' }
-  );
+  const token = createToken(user);
 
   res.json({
     token,
@@ -222,8 +239,7 @@ app.post('/api/users', authenticateToken, requireAdmin, (req, res) => {
     return res.status(400).json({ message: 'Username sudah digunakan' });
   }
 
-  const hashedPassword = bcrypt.hashSync(password, 10);
-  const newUser = db.addUser({ username, password: hashedPassword, name, role });
+  const newUser = db.addUser({ username, password, name, role });
 
   if (newUser) {
     res.json({ id: newUser.id, message: 'Pengguna berhasil ditambahkan' });

@@ -1,8 +1,18 @@
 const fs = require('fs');
 const path = require('path');
-const bcrypt = require('bcryptjs');
 
 const dbPath = path.join(__dirname, 'data.json');
+
+// Simple hash function (no bcrypt needed for demo)
+const simpleHash = (password) => {
+  let hash = 0;
+  for (let i = 0; i < password.length; i++) {
+    const char = password.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash; // Convert to 32bit integer
+  }
+  return hash.toString();
+};
 
 // Initialize JSON database
 const initDatabase = () => {
@@ -11,7 +21,7 @@ const initDatabase = () => {
       {
         id: 1,
         username: 'admin',
-        password: bcrypt.hashSync('admin123', 10),
+        password: simpleHash('admin123'),
         name: 'Administrator Sistem',
         role: 'admin',
         created_at: new Date().toISOString()
@@ -19,7 +29,7 @@ const initDatabase = () => {
       {
         id: 2,
         username: 'mahasiswa1',
-        password: bcrypt.hashSync('user123', 10),
+        password: simpleHash('user123'),
         name: 'Ahmad Budi Santoso',
         role: 'user',
         created_at: new Date().toISOString()
@@ -27,7 +37,7 @@ const initDatabase = () => {
       {
         id: 3,
         username: 'mahasiswa2',
-        password: bcrypt.hashSync('user123', 10),
+        password: simpleHash('user123'),
         name: 'Sari Dewi Lestari',
         role: 'user',
         created_at: new Date().toISOString()
@@ -156,6 +166,7 @@ const db = {
     const newUser = {
       id: data.nextId.users++,
       ...userData,
+      password: simpleHash(userData.password),
       created_at: new Date().toISOString()
     };
 
@@ -268,6 +279,11 @@ const db = {
 
     data.borrowings[borrowingIndex] = { ...data.borrowings[borrowingIndex], ...borrowingData };
     return writeData(data);
+  },
+
+  // Simple password verification
+  verifyPassword: (inputPassword, hashedPassword) => {
+    return simpleHash(inputPassword) === parseInt(hashedPassword);
   }
 };
 
