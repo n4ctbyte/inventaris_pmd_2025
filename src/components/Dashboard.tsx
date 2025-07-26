@@ -2,20 +2,31 @@ import React, { useState } from 'react';
 import InventoryList from './InventoryList';
 import BorrowingHistory from './BorrowingHistory';
 import ItemManagement from './ItemManagement';
+import AdminPanel from './AdminPanel';
 import { Package, History, Settings, LogOut, Sparkles } from 'lucide-react';
 
 interface DashboardProps {
   onLogout: () => void;
+  userType: 'user' | 'admin';
 }
 
-const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
+const Dashboard: React.FC<DashboardProps> = ({ onLogout, userType }) => {
   const [activeTab, setActiveTab] = useState('inventory');
 
-  const tabs = [
+  const userTabs = [
     { id: 'inventory', label: 'Inventaris', icon: Package, color: 'blue' },
     { id: 'history', label: 'Riwayat', icon: History, color: 'green' },
     { id: 'manage', label: 'Kelola Barang', icon: Settings, color: 'purple' },
   ];
+
+  const adminTabs = [
+    { id: 'inventory', label: 'Inventaris', icon: Package, color: 'blue' },
+    { id: 'history', label: 'Riwayat', icon: History, color: 'green' },
+    { id: 'manage', label: 'Kelola Barang', icon: Settings, color: 'purple' },
+    { id: 'admin', label: 'Panel Admin', icon: Settings, color: 'red' },
+  ];
+
+  const tabs = userType === 'admin' ? adminTabs : userTabs;
 
   const getTabStyles = (tab: any, isActive: boolean) => {
     const colors = {
@@ -28,6 +39,9 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
       purple: isActive 
         ? 'border-purple-500 text-purple-600 bg-purple-50' 
         : 'border-transparent text-gray-500 hover:text-purple-600 hover:border-purple-300 hover:bg-purple-50',
+      red: isActive 
+        ? 'border-red-500 text-red-600 bg-red-50' 
+        : 'border-transparent text-gray-500 hover:text-red-600 hover:border-red-300 hover:bg-red-50',
     };
     return colors[tab.color as keyof typeof colors];
   };
@@ -48,7 +62,13 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
               </div>
             </div>
             
-            <div className="flex items-center">
+            <div className="flex items-center space-x-4">
+              {userType === 'admin' && (
+                <div className="hidden sm:flex items-center bg-red-500/20 backdrop-blur-sm px-3 py-1 rounded-lg border border-red-400/30">
+                  <Settings className="h-4 w-4 mr-2 text-red-200" />
+                  <span className="text-sm font-medium text-red-100">Administrator</span>
+                </div>
+              )}
               <button
                 onClick={onLogout}
                 className="bg-white/10 hover:bg-white/20 backdrop-blur-sm px-4 py-2 rounded-lg transition-all duration-200 flex items-center font-medium border border-white/20 hover:border-white/30"
@@ -108,6 +128,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
             {activeTab === 'inventory' && <InventoryList />}
             {activeTab === 'history' && <BorrowingHistory />}
             {activeTab === 'manage' && <ItemManagement />}
+            {activeTab === 'admin' && userType === 'admin' && <AdminPanel />}
           </div>
         </div>
       </div>

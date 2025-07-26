@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { LogIn, Eye, EyeOff, Lock } from 'lucide-react';
 
 interface LoginProps {
-  onLogin: () => void;
+  onLogin: (userType: 'user' | 'admin') => void;
 }
 
 const Login: React.FC<LoginProps> = ({ onLogin }) => {
@@ -12,12 +12,15 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
 
   // Password untuk akses sistem
   const SYSTEM_PASSWORD = 'permuridhis2025';
+  const ADMIN_PASSWORD = 'admin_permuridhis2025';
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (password === SYSTEM_PASSWORD) {
-      onLogin();
+    if (password === ADMIN_PASSWORD) {
+      onLogin('admin');
+    } else if (password === SYSTEM_PASSWORD) {
+      onLogin('user');
     } else {
       setError('Password salah! Silakan coba lagi.');
     }
@@ -81,10 +84,17 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
 
           {/* Demo Info */}
           <div className="mt-8 pt-6 border-t border-gray-200">
-            <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
-              <p className="text-sm text-blue-800 text-center">
-                <strong>Password Demo:</strong> <code className="bg-blue-100 px-2 py-1 rounded">permuridhis2025</code>
-              </p>
+            <div className="space-y-3">
+              <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+                <p className="text-sm text-blue-800 text-center">
+                  <strong>Password User:</strong> <code className="bg-blue-100 px-2 py-1 rounded">permuridhis2025</code>
+                </p>
+              </div>
+              <div className="bg-purple-50 rounded-lg p-4 border border-purple-200">
+                <p className="text-sm text-purple-800 text-center">
+                  <strong>Password Admin:</strong> <code className="bg-purple-100 px-2 py-1 rounded">admin_permuridhis2025</code>
+                </p>
+              </div>
             </div>
           </div>
         </div>

@@ -4,14 +4,17 @@ import Dashboard from './components/Dashboard';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userType, setUserType] = useState<'user' | 'admin'>('user');
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = () => {
+  const handleLogin = (type: 'user' | 'admin') => {
     setIsAuthenticated(true);
+    setUserType(type);
   };
 
   const handleLogout = () => {
     setIsAuthenticated(false);
+    setUserType('user');
   };
 
   if (loading) {
@@ -25,7 +28,7 @@ function App() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
       {isAuthenticated ? (
-        <Dashboard onLogout={handleLogout} />
+        <Dashboard onLogout={handleLogout} userType={userType} />
       ) : (
         <Login onLogin={handleLogin} />
       )}
