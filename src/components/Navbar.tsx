@@ -18,7 +18,7 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogout }) => {
             </div>
             <div>
               <h1 className="text-xl font-bold">PRIME</h1>
-              <p className="text-sm text-blue-100 hidden sm:block">Permuridhis Resource and Inevntory Management Ecosystem</p>
+              <p className="text-sm text-blue-100 hidden sm:block">Permuridhis Resource and Inventory Management Ecosystem</p>
             </div>
           </div>
           
