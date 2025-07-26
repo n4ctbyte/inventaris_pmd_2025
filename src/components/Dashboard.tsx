@@ -57,8 +57,8 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout, userType }) => {
                 <Package className="h-8 w-8 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold">Inventaris Permuridhis</h1>
-                <p className="text-sm text-blue-100 hidden sm:block">Persatuan Mahasiswa-Mahasiswi UNRI Buddhis</p>
+                <h1 className="text-xl font-bold">PRIME</h1>
+                <p className="text-sm text-blue-100 hidden sm:block">Permuridhis Resource and Inventory Management Ecosystem</p>
               </div>
             </div>
             

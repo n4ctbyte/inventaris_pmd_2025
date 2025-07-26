@@ -1,6 +1,10 @@
 import React from 'react';
-import { User } from '../App';
 import { LogOut, Package, Crown, User as UserIcon } from 'lucide-react';
+
+interface User {
+  name: string;
+  role: 'user' | 'admin';
+}
 
 interface NavbarProps {
   user: User;
