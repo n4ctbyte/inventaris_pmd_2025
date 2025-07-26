@@ -57,8 +57,8 @@ const BorrowForm: React.FC<BorrowFormProps> = ({ item, onSuccess, onCancel }) =>
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl border border-gray-200">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto">
+      <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl border border-gray-200 my-8 max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex justify-between items-center p-6 border-b border-gray-200">
           <div className="flex items-center">
@@ -100,7 +100,7 @@ const BorrowForm: React.FC<BorrowFormProps> = ({ item, onSuccess, onCancel }) =>
         )}
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6">
+        <form onSubmit={handleSubmit} className="p-6 flex-1 overflow-y-auto">
           <div className="space-y-6">
             <div>
               <label className="flex items-center text-gray-700 text-sm font-semibold mb-3">
@@ -157,18 +157,18 @@ const BorrowForm: React.FC<BorrowFormProps> = ({ item, onSuccess, onCancel }) =>
             </div>
           </div>
 
-          <div className="flex space-x-3 mt-8">
+          <div className="flex space-x-3 mt-8 sticky bottom-0 bg-white pt-4 border-t border-gray-100">
             <button
               type="button"
               onClick={onCancel}
-              className="flex-1 bg-gray-100 text-gray-700 py-3 px-4 rounded-lg hover:bg-gray-200 font-semibold transition-all duration-200"
+              className="flex-1 bg-gray-100 text-gray-700 py-3 px-4 rounded-lg hover:bg-gray-200 font-semibold transition-all duration-200 min-h-[48px]"
             >
               Batal
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 px-4 rounded-lg hover:from-blue-700 hover:to-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed font-semibold transition-all duration-200 shadow-lg"
+              className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 px-4 rounded-lg hover:from-blue-700 hover:to-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed font-semibold transition-all duration-200 shadow-lg min-h-[48px]"
             >
               {loading ? (
                 <div className="flex items-center justify-center">
