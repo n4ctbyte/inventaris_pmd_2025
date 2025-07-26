@@ -4,23 +4,13 @@ import Dashboard from './components/Dashboard';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const auth = localStorage.getItem('inventaris_auth');
-    if (auth === 'authenticated') {
-      setIsAuthenticated(true);
-    }
-    setLoading(false);
-  }, []);
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = () => {
-    localStorage.setItem('inventaris_auth', 'authenticated');
     setIsAuthenticated(true);
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('inventaris_auth');
     setIsAuthenticated(false);
   };
 
