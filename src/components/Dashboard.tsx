@@ -31,17 +31,17 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout, userType }) => {
   const getTabStyles = (tab: any, isActive: boolean) => {
     const colors = {
       blue: isActive 
-        ? 'border-blue-500 text-blue-600 bg-blue-50' 
-        : 'border-transparent text-gray-500 hover:text-blue-600 hover:border-blue-300 hover:bg-blue-50',
+        ? 'border-purple-500 text-purple-600 bg-purple-50' 
+        : 'border-transparent text-gray-500 hover:text-purple-600 hover:border-purple-300 hover:bg-purple-50',
       green: isActive 
         ? 'border-green-500 text-green-600 bg-green-50' 
         : 'border-transparent text-gray-500 hover:text-green-600 hover:border-green-300 hover:bg-green-50',
       purple: isActive 
-        ? 'border-purple-500 text-purple-600 bg-purple-50' 
-        : 'border-transparent text-gray-500 hover:text-purple-600 hover:border-purple-300 hover:bg-purple-50',
+        ? 'border-violet-500 text-violet-600 bg-violet-50' 
+        : 'border-transparent text-gray-500 hover:text-violet-600 hover:border-violet-300 hover:bg-violet-50',
       red: isActive 
-        ? 'border-red-500 text-red-600 bg-red-50' 
-        : 'border-transparent text-gray-500 hover:text-red-600 hover:border-red-300 hover:bg-red-50',
+        ? 'border-amber-500 text-amber-600 bg-amber-50' 
+        : 'border-transparent text-gray-500 hover:text-amber-600 hover:border-amber-300 hover:bg-amber-50',
     };
     return colors[tab.color as keyof typeof colors];
   };
@@ -49,7 +49,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout, userType }) => {
   return (
     <div className="min-h-screen">
       {/* Navbar */}
-      <nav className="bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 text-white shadow-xl border-b border-blue-500">
+      <nav className="bg-gradient-to-r from-purple-600 via-purple-700 to-violet-700 text-white shadow-xl border-b border-purple-500">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center">
@@ -58,15 +58,15 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout, userType }) => {
               </div>
               <div>
                 <h1 className="text-xl font-bold">PRIME</h1>
-                <p className="text-sm text-blue-100 hidden sm:block">Permuridhis Resource and Inventory Management Ecosystem</p>
+                <p className="text-sm text-purple-100 hidden sm:block">Permuridhis Resource and Inventory Management Ecosystem</p>
               </div>
             </div>
             
             <div className="flex items-center space-x-4">
               {userType === 'admin' && (
-                <div className="hidden sm:flex items-center bg-red-500/20 backdrop-blur-sm px-3 py-1 rounded-lg border border-red-400/30">
-                  <Settings className="h-4 w-4 mr-2 text-red-200" />
-                  <span className="text-sm font-medium text-red-100">Administrator</span>
+                <div className="hidden sm:flex items-center bg-amber-500/20 backdrop-blur-sm px-3 py-1 rounded-lg border border-amber-400/30">
+                  <Settings className="h-4 w-4 mr-2 text-amber-200" />
+                  <span className="text-sm font-medium text-amber-100">Administrator</span>
                 </div>
               )}
               <button
@@ -84,18 +84,18 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout, userType }) => {
       <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
         {/* Welcome Header */}
         <div className="mb-8">
-          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-6 text-white shadow-xl">
+          <div className="bg-gradient-to-r from-purple-600 to-violet-600 rounded-2xl p-6 text-white shadow-xl">
             <div className="flex items-center justify-between">
               <div>
                 <h1 className="text-2xl sm:text-3xl font-bold mb-2">
                   Sistem Inventaris Permuridhis 📦
                 </h1>
-                <p className="text-blue-100 text-sm sm:text-base">
+                <p className="text-purple-100 text-sm sm:text-base">
                   Kelola inventaris organisasi dengan mudah dan efisien
                 </p>
               </div>
               <div className="hidden sm:block">
-                <Sparkles className="h-16 w-16 text-blue-200" />
+                <Sparkles className="h-16 w-16 text-purple-200" />
               </div>
             </div>
           </div>

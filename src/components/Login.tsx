@@ -32,11 +32,11 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
         <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
           {/* Header */}
           <div className="text-center mb-8">
-            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full p-4 w-20 h-20 mx-auto mb-6 shadow-lg">
+            <div className="bg-gradient-to-r from-purple-600 to-violet-600 rounded-full p-4 w-20 h-20 mx-auto mb-6 shadow-lg">
               <Lock className="h-12 w-12 text-white" />
             </div>
             <h1 className="text-3xl font-bold text-gray-900 mb-2">Sistem Inventaris</h1>
-            <h2 className="text-xl font-semibold text-blue-600 mb-2">Permuridhis</h2>
+            <h2 className="text-xl font-semibold text-purple-600 mb-2">Permuridhis</h2>
             <p className="text-gray-600 text-sm">Persatuan Mahasiswa-Mahasiswi UNRI Buddhis</p>
           </div>
 
@@ -57,7 +57,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-4 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-lg"
+                  className="w-full px-4 py-4 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-lg"
                   placeholder="Password untuk mengakses sistem"
                   required
                 />
@@ -73,7 +73,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
 
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-4 px-4 rounded-lg hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 font-semibold shadow-lg text-lg"
+              className="w-full bg-gradient-to-r from-purple-600 to-violet-600 text-white py-4 px-4 rounded-lg hover:from-purple-700 hover:to-violet-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-all duration-200 font-semibold shadow-lg text-lg"
             >
               <div className="flex items-center justify-center">
                 <LogIn className="h-5 w-5 mr-2" />
@@ -85,14 +85,14 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
           {/* Demo Info */}
           <div className="mt-8 pt-6 border-t border-gray-200">
             <div className="space-y-3">
-              <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
-                <p className="text-sm text-blue-800 text-center">
-                  <strong>Password User:</strong> <code className="bg-blue-100 px-2 py-1 rounded">permuridhis2025</code>
-                </p>
-              </div>
               <div className="bg-purple-50 rounded-lg p-4 border border-purple-200">
                 <p className="text-sm text-purple-800 text-center">
-                  <strong>Password Admin:</strong> <code className="bg-purple-100 px-2 py-1 rounded">admin_permuridhis2025</code>
+                  <strong>Password User:</strong> <code className="bg-purple-100 px-2 py-1 rounded">permuridhis2025</code>
+                </p>
+              </div>
+              <div className="bg-violet-50 rounded-lg p-4 border border-violet-200">
+                <p className="text-sm text-violet-800 text-center">
+                  <strong>Password Admin:</strong> <code className="bg-violet-100 px-2 py-1 rounded">admin_permuridhis2025</code>
                 </p>
               </div>
             </div>

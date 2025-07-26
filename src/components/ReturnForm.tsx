@@ -98,7 +98,7 @@ const ReturnForm: React.FC<ReturnFormProps> = ({ onSuccess, onCancel }) => {
                 <select
                   value={selectedBorrowing}
                   onChange={(e) => setSelectedBorrowing(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-purple-500"
                   required
                 >
                   <option value="">-- Pilih Barang --</option>
@@ -117,7 +117,7 @@ const ReturnForm: React.FC<ReturnFormProps> = ({ onSuccess, onCancel }) => {
                 <textarea
                   value={conditionNote}
                   onChange={(e) => setConditionNote(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-purple-500"
                   rows={3}
                   placeholder="Contoh: Kondisi baik, Rusak di bagian layar, Hilang kabel charger, dll."
                   required

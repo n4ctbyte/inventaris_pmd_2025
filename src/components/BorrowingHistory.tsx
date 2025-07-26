@@ -39,7 +39,7 @@ const BorrowingHistory: React.FC<BorrowingHistoryProps> = ({ userType = 'user' }
             className={`flex items-center px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
               showPersonalInfo
                 ? 'bg-red-100 text-red-700 hover:bg-red-200'
-                : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
+                : 'bg-purple-100 text-purple-700 hover:bg-purple-200'
             }`}
           >
             {showPersonalInfo ? (
@@ -70,8 +70,8 @@ const BorrowingHistory: React.FC<BorrowingHistoryProps> = ({ userType = 'user' }
                 <div className="flex-1">
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center">
-                      <div className="bg-blue-50 rounded-lg p-2 mr-3">
-                        <Package className="h-5 w-5 text-blue-600" />
+                      <div className="bg-purple-50 rounded-lg p-2 mr-3">
+                        <Package className="h-5 w-5 text-purple-600" />
                       </div>
                       <h3 className="text-lg font-semibold text-gray-900">
                         {borrowing.item_name}
@@ -176,14 +176,14 @@ const BorrowingHistory: React.FC<BorrowingHistoryProps> = ({ userType = 'user' }
 
       {/* Info untuk user biasa */}
       {!isAdmin && (
-        <div className="mt-8 bg-blue-50 rounded-xl p-6 border border-blue-200">
+        <div className="mt-8 bg-purple-50 rounded-xl p-6 border border-purple-200">
           <div className="flex items-start">
-            <div className="bg-blue-100 rounded-lg p-2 mr-4">
-              <User className="h-5 w-5 text-blue-600" />
+            <div className="bg-purple-100 rounded-lg p-2 mr-4">
+              <User className="h-5 w-5 text-purple-600" />
             </div>
             <div>
-              <h3 className="font-semibold text-blue-900 mb-2">Informasi Privasi</h3>
-              <p className="text-sm text-blue-800">
+              <h3 className="font-semibold text-purple-900 mb-2">Informasi Privasi</h3>
+              <p className="text-sm text-purple-800">
                 Untuk menjaga privasi, informasi peminjam tidak ditampilkan dalam riwayat umum. 
                 Hanya administrator yang dapat melihat detail lengkap peminjaman.
               </p>

@@ -85,7 +85,7 @@ const InventoryList: React.FC = () => {
               placeholder="Cari barang..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
             />
           </div>
           <div className="relative">
@@ -93,7 +93,7 @@ const InventoryList: React.FC = () => {
             <select
               value={stockFilter}
               onChange={(e) => setStockFilter(e.target.value)}
-              className="pl-10 pr-8 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-white"
+              className="pl-10 pr-8 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent appearance-none bg-white"
             >
               <option value="all">Semua Barang</option>
               <option value="available">Tersedia</option>
@@ -116,7 +116,7 @@ const InventoryList: React.FC = () => {
                 setSearchTerm('');
                 setStockFilter('all');
               }}
-              className="text-blue-600 hover:text-blue-700 font-medium"
+              className="text-purple-600 hover:text-purple-700 font-medium"
             >
               Reset Filter
             </button>
@@ -125,10 +125,10 @@ const InventoryList: React.FC = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredItems.map((item) => (
-            <div key={item.id} className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm hover:shadow-lg transition-all duration-200 hover:border-blue-200">
+            <div key={item.id} className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm hover:shadow-lg transition-all duration-200 hover:border-purple-200">
               <div className="flex items-start justify-between mb-4">
-                <div className="bg-blue-50 rounded-lg p-3">
-                  <Package className="h-6 w-6 text-blue-600" />
+                <div className="bg-purple-50 rounded-lg p-3">
+                  <Package className="h-6 w-6 text-purple-600" />
                 </div>
                 <div className={`px-3 py-1 rounded-full text-sm font-medium ${
                   item.stock > 0 
@@ -156,7 +156,7 @@ const InventoryList: React.FC = () => {
                   disabled={item.stock === 0}
                   className={`px-4 py-2 rounded-lg text-sm font-semibold flex items-center transition-all duration-200 ${
                     item.stock > 0
-                      ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 shadow-md hover:shadow-lg'
+                      ? 'bg-gradient-to-r from-purple-600 to-violet-600 text-white hover:from-purple-700 hover:to-violet-700 shadow-md hover:shadow-lg'
                       : 'bg-gray-200 text-gray-500 cursor-not-allowed'
                   }`}
                 >

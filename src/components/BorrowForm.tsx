@@ -62,8 +62,8 @@ const BorrowForm: React.FC<BorrowFormProps> = ({ item, onSuccess, onCancel }) =>
         {/* Header */}
         <div className="flex justify-between items-center p-6 border-b border-gray-200">
           <div className="flex items-center">
-            <div className="bg-blue-100 rounded-lg p-2 mr-3">
-              <Package className="h-5 w-5 text-blue-600" />
+            <div className="bg-purple-100 rounded-lg p-2 mr-3">
+              <Package className="h-5 w-5 text-purple-600" />
             </div>
             <h3 className="text-xl font-bold text-gray-900">Pinjam Barang</h3>
           </div>
@@ -77,13 +77,13 @@ const BorrowForm: React.FC<BorrowFormProps> = ({ item, onSuccess, onCancel }) =>
 
         {/* Item Info */}
         <div className="p-6 border-b border-gray-100">
-          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 border border-blue-100">
+          <div className="bg-gradient-to-r from-purple-50 to-violet-50 rounded-xl p-4 border border-purple-100">
             <h4 className="font-semibold text-gray-900 mb-2">{item.name}</h4>
             <p className="text-sm text-gray-600 mb-3">{item.description}</p>
             <div className="flex items-center justify-between">
               <div className="flex items-center text-sm text-gray-700">
-                <Package className="h-4 w-4 mr-2 text-blue-600" />
-                <span>Stok tersedia: <span className="font-semibold text-blue-600">{item.stock}</span></span>
+                <Package className="h-4 w-4 mr-2 text-purple-600" />
+                <span>Stok tersedia: <span className="font-semibold text-purple-600">{item.stock}</span></span>
               </div>
               <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-medium">
                 Tersedia
@@ -111,7 +111,7 @@ const BorrowForm: React.FC<BorrowFormProps> = ({ item, onSuccess, onCancel }) =>
                 type="text"
                 value={borrowerName}
                 onChange={(e) => setBorrowerName(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
                 placeholder="Masukkan nama lengkap peminjam"
                 required
               />
@@ -128,7 +128,7 @@ const BorrowForm: React.FC<BorrowFormProps> = ({ item, onSuccess, onCancel }) =>
                 max={item.stock}
                 value={quantity}
                 onChange={(e) => setQuantity(parseInt(e.target.value))}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
                 required
               />
               <p className="text-xs text-gray-500 mt-1">Maksimal {item.stock} unit</p>
@@ -142,7 +142,7 @@ const BorrowForm: React.FC<BorrowFormProps> = ({ item, onSuccess, onCancel }) =>
               <textarea
                 value={purpose}
                 onChange={(e) => setPurpose(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 resize-none"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 resize-none"
                 rows={4}
                 placeholder="Contoh: Untuk kegiatan seminar Buddha, presentasi tugas kelompok, dokumentasi acara, dll."
                 required
@@ -168,7 +168,7 @@ const BorrowForm: React.FC<BorrowFormProps> = ({ item, onSuccess, onCancel }) =>
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 px-4 rounded-lg hover:from-blue-700 hover:to-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed font-semibold transition-all duration-200 shadow-lg min-h-[48px]"
+              className="flex-1 bg-gradient-to-r from-purple-600 to-violet-600 text-white py-3 px-4 rounded-lg hover:from-purple-700 hover:to-violet-700 disabled:opacity-50 disabled:cursor-not-allowed font-semibold transition-all duration-200 shadow-lg min-h-[48px]"
             >
               {loading ? (
                 <div className="flex items-center justify-center">
