@@ -31,41 +31,6 @@ const initializeData = () => {
       stock: 2,
       created_at: new Date().toISOString()
     },
-    {
-      id: 2,
-      name: 'Kamera DSLR Canon EOS 1300D',
-      description: 'Kamera digital untuk dokumentasi kegiatan organisasi dengan lensa kit 18-55mm',
-      stock: 1,
-      created_at: new Date().toISOString()
-    },
-    {
-      id: 3,
-      name: 'Speaker Bluetooth JBL Charge 4',
-      description: 'Speaker portable dengan kualitas suara jernih untuk acara outdoor dan indoor',
-      stock: 3,
-      created_at: new Date().toISOString()
-    },
-    {
-      id: 4,
-      name: 'Microphone Wireless Shure SM58',
-      description: 'Microphone profesional untuk MC, pembicara, dan kegiatan panggung',
-      stock: 4,
-      created_at: new Date().toISOString()
-    },
-    {
-      id: 5,
-      name: 'Laptop Acer Aspire 5',
-      description: 'Laptop untuk keperluan administrasi dan presentasi dengan spesifikasi Intel Core i5',
-      stock: 1,
-      created_at: new Date().toISOString()
-    },
-    {
-      id: 6,
-      name: 'Tripod Kamera Manfrotto',
-      description: 'Tripod profesional untuk kamera dan smartphone, tinggi maksimal 165cm',
-      stock: 2,
-      created_at: new Date().toISOString()
-    }
   ];
 
   const defaultBorrowings: Borrowing[] = [
@@ -81,16 +46,6 @@ const initializeData = () => {
       condition_note: 'Kondisi baik, tidak ada kerusakan',
       status: 'returned'
     },
-    {
-      id: 2,
-      item_id: 1,
-      item_name: 'Proyektor Epson EB-X41',
-      quantity: 1,
-      purpose: 'Presentasi tugas akhir mata kuliah Filsafat Buddha',
-      borrower_name: 'Sari Dewi Lestari',
-      borrow_date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-      status: 'borrowed'
-    }
   ];
 
   if (!localStorage.getItem('inventaris_items')) {
