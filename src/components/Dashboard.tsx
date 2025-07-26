@@ -15,8 +15,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout, userType }) => {
 
   const userTabs = [
     { id: 'inventory', label: 'Inventaris', icon: Package, color: 'blue' },
-    { id: 'history', label: 'Riwayat', icon: History, color: 'green' },
-    { id: 'manage', label: 'Kelola Barang', icon: Settings, color: 'purple' },
+    { id: 'history', label: 'Riwayat', icon: History, color: 'blue' },
   ];
 
   const adminTabs = [
@@ -90,9 +89,6 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout, userType }) => {
                 <h1 className="text-2xl sm:text-3xl font-bold mb-2">
                   Sistem Inventaris Permuridhis 📦
                 </h1>
-                <p className="text-purple-100 text-sm sm:text-base">
-                  Kelola inventaris organisasi dengan mudah dan efisien
-                </p>
               </div>
               <div className="hidden sm:block">
                 <Sparkles className="h-16 w-16 text-purple-200" />
@@ -127,7 +123,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout, userType }) => {
           <div className="p-6 sm:p-8">
             {activeTab === 'inventory' && <InventoryList />}
             {activeTab === 'history' && <BorrowingHistory userType={userType} />}
-            {activeTab === 'manage' && <ItemManagement />}
+            {activeTab === 'manage' && userType === 'admin' && <ItemManagement />}
             {activeTab === 'admin' && userType === 'admin' && <AdminPanel />}
           </div>
         </div>
