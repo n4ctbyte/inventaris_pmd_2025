@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Package, Users, BarChart3, Shield, Database, Activity } from 'lucide-react';
+import { Package, Users, BarChart3, Shield, Database, Activity, History } from 'lucide-react';
 import { getItems, getBorrowings } from '../utils/storage';
+import BorrowingHistory from './BorrowingHistory';
 
 const AdminPanel: React.FC = () => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -11,6 +12,7 @@ const AdminPanel: React.FC = () => {
 
   const tabs = [
     { id: 'overview', label: 'Overview', icon: BarChart3 },
+    { id: 'borrowings', label: 'Semua Peminjaman', icon: History },
     { id: 'analytics', label: 'Analytics', icon: Activity },
     { id: 'data', label: 'Data Management', icon: Database },
   ];
@@ -118,6 +120,12 @@ const AdminPanel: React.FC = () => {
               ))}
             </div>
           </div>
+        </div>
+      )}
+
+      {activeTab === 'borrowings' && (
+        <div>
+          <BorrowingHistory userType="admin" />
         </div>
       )}
 

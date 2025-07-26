@@ -126,7 +126,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout, userType }) => {
           {/* Tab Content */}
           <div className="p-6 sm:p-8">
             {activeTab === 'inventory' && <InventoryList />}
-            {activeTab === 'history' && <BorrowingHistory />}
+            {activeTab === 'history' && <BorrowingHistory userType={userType} />}
             {activeTab === 'manage' && <ItemManagement />}
             {activeTab === 'admin' && userType === 'admin' && <AdminPanel />}
           </div>
