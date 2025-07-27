@@ -97,30 +97,12 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
               </div>
             </button>
           </form>
-
-          {/* Demo Info */}
-          <div className="mt-8 pt-6 border-t border-gray-200/50 relative z-10">
-            <div className="space-y-3">
-              <div className="bg-purple-50/80 backdrop-blur-sm rounded-xl p-4 border border-purple-200/50 shadow-soft hover:shadow-lg transition-all duration-300 card-hover">
-                <p className="text-sm text-purple-800 text-center font-medium">
-                  <strong className="font-bold">Password User:</strong> 
-                  <code className="bg-purple-100/80 px-3 py-1.5 rounded-lg ml-2 font-mono text-xs font-bold">permuridhis2025</code>
-                </p>
-              </div>
-              <div className="bg-violet-50/80 backdrop-blur-sm rounded-xl p-4 border border-violet-200/50 shadow-soft hover:shadow-lg transition-all duration-300 card-hover">
-                <p className="text-sm text-violet-800 text-center font-medium">
-                  <strong className="font-bold">Password Admin:</strong> 
-                  <code className="bg-violet-100/80 px-3 py-1.5 rounded-lg ml-2 font-mono text-xs font-bold">admin_permuridhis2025</code>
-                </p>
-              </div>
               <div>
-                <p className="text-gray-600 text-sm font-medium text-center">Dibuat dengan ❤️ oleh Divisi Human Resource and Equipment</p>
+                <p className="text-gray-600 text-sm font-medium text-center mt-4 ">Dibuat dengan ❤️ oleh Divisi Human Resource and Equipment</p>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
   );
 };
 
