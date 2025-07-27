@@ -3,7 +3,7 @@ import InventoryList from './InventoryList';
 import BorrowingHistory from './BorrowingHistory';
 import ItemManagement from './ItemManagement';
 import AdminPanel from './AdminPanel';
-import { Package, History, Settings, LogOut, Sparkles } from 'lucide-react';
+import { Package, History, Settings, LogOut, Sparkles, Crown, Zap } from 'lucide-react';
 
 interface DashboardProps {
   onLogout: () => void;
@@ -46,31 +46,38 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout, userType }) => {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50 relative overflow-hidden">
+      {/* Animated background elements */}
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-20 w-96 h-96 bg-purple-100 rounded-full mix-blend-multiply filter blur-xl opacity-40 animate-pulse-soft"></div>
+        <div className="absolute top-40 right-20 w-96 h-96 bg-violet-100 rounded-full mix-blend-multiply filter blur-xl opacity-40 animate-pulse-soft" style={{animationDelay: '2s'}}></div>
+        <div className="absolute bottom-20 left-1/2 w-96 h-96 bg-pink-100 rounded-full mix-blend-multiply filter blur-xl opacity-40 animate-pulse-soft" style={{animationDelay: '4s'}}></div>
+      </div>
+      
       {/* Navbar */}
-      <nav className="bg-gradient-to-r from-purple-600 via-purple-700 to-violet-700 text-white shadow-xl border-b border-purple-500">
+      <nav className="bg-gradient-to-r from-purple-600 via-purple-700 to-violet-700 text-white shadow-2xl border-b border-purple-500/50 backdrop-blur-xl relative z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
+          <div className="flex justify-between h-16 items-center">
             <div className="flex items-center">
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-2 mr-4">
-                <Package className="h-8 w-8 text-white" />
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-2 mr-4 floating shadow-lg">
+                <Package className="h-8 w-8 text-white drop-shadow-sm" />
               </div>
               <div>
-                <h1 className="text-xl font-bold">PRIME</h1>
-                <p className="text-sm text-purple-100 hidden sm:block">Permuridhis Resource and Inventory Management Ecosystem</p>
+                <h1 className="text-xl font-bold tracking-wide">PRIME</h1>
+                <p className="text-sm text-purple-100 hidden sm:block font-medium opacity-90">Permuridhis Resource and Inventory Management Ecosystem</p>
               </div>
             </div>
             
             <div className="flex items-center space-x-4">
               {userType === 'admin' && (
-                <div className="hidden sm:flex items-center bg-amber-500/20 backdrop-blur-sm px-3 py-1 rounded-lg border border-amber-400/30">
-                  <Settings className="h-4 w-4 mr-2 text-amber-200" />
-                  <span className="text-sm font-medium text-amber-100">Administrator</span>
+                <div className="hidden sm:flex items-center bg-amber-500/20 backdrop-blur-sm px-4 py-2 rounded-xl border border-amber-400/30 shadow-lg animate-slide-in-right">
+                  <Crown className="h-4 w-4 mr-2 text-amber-200" />
+                  <span className="text-sm font-semibold text-amber-100">Administrator</span>
                 </div>
               )}
               <button
                 onClick={onLogout}
-                className="bg-white/10 hover:bg-white/20 backdrop-blur-sm px-4 py-2 rounded-lg transition-all duration-200 flex items-center font-medium border border-white/20 hover:border-white/30"
+                className="bg-white/10 hover:bg-white/20 backdrop-blur-sm px-4 py-2 rounded-xl transition-all duration-300 flex items-center font-semibold border border-white/20 hover:border-white/30 shadow-lg transform hover:-translate-y-0.5 hover:shadow-xl"
               >
                 <LogOut className="h-4 w-4 mr-2" />
                 <span className="hidden sm:inline">Keluar</span>
@@ -80,28 +87,34 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout, userType }) => {
         </div>
       </nav>
 
-      <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+      <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 relative z-10">
         {/* Welcome Header */}
-        <div className="mb-8">
-          <div className="bg-gradient-to-r from-purple-600 to-violet-600 rounded-2xl p-6 text-white shadow-xl">
+        <div className="mb-8 animate-fade-in-up">
+          <div className="bg-gradient-to-r from-purple-600 to-violet-600 rounded-3xl p-8 text-white shadow-2xl relative overflow-hidden">
+            {/* Decorative elements */}
+            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
+            <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-12 -translate-x-12"></div>
+            
             <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-2xl sm:text-3xl font-bold mb-2">
+              <div className="relative z-10">
+                <h1 className="text-2xl sm:text-3xl font-bold mb-2 flex items-center">
                   Sistem Inventaris Permuridhis 📦
+                  <Zap className="h-8 w-8 ml-3 text-yellow-300 animate-pulse" />
                 </h1>
+                <p className="text-purple-100 font-medium opacity-90">Kelola inventaris dengan mudah dan efisien</p>
               </div>
               <div className="hidden sm:block">
-                <Sparkles className="h-16 w-16 text-purple-200" />
+                <Sparkles className="h-16 w-16 text-purple-200 floating" />
               </div>
             </div>
           </div>
         </div>
 
         {/* Main Content */}
-        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+        <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 overflow-hidden animate-fade-in-scale">
           {/* Tab Navigation */}
-          <div className="border-b border-gray-200 bg-gray-50">
-            <nav className="flex">
+          <div className="border-b border-gray-200/50 bg-gradient-to-r from-gray-50/80 to-white/80 backdrop-blur-sm">
+            <nav className="flex overflow-x-auto">
               {tabs.map((tab) => {
                 const Icon = tab.icon;
                 const isActive = activeTab === tab.id;
@@ -109,9 +122,9 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout, userType }) => {
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`py-4 px-6 border-b-2 font-semibold text-sm flex items-center transition-all duration-200 ${getTabStyles(tab, isActive)}`}
+                    className={`py-4 px-6 border-b-2 font-semibold text-sm flex items-center transition-all duration-300 whitespace-nowrap transform hover:-translate-y-0.5 ${getTabStyles(tab, isActive)}`}
                   >
-                    <Icon className="h-5 w-5 mr-2" />
+                    <Icon className={`h-5 w-5 mr-2 ${isActive ? 'animate-pulse' : ''}`} />
                     {tab.label}
                   </button>
                 );
@@ -120,7 +133,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout, userType }) => {
           </div>
 
           {/* Tab Content */}
-          <div className="p-6 sm:p-8">
+          <div className="p-6 sm:p-8 page-transition">
             {activeTab === 'inventory' && <InventoryList />}
             {activeTab === 'history' && <BorrowingHistory userType={userType} />}
             {activeTab === 'manage' && userType === 'admin' && <ItemManagement />}

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { LogIn, Eye, EyeOff, Lock } from 'lucide-react';
+import { LogIn, Eye, EyeOff, Lock, Sparkles, Shield } from 'lucide-react';
 
 interface LoginProps {
   onLogin: (userType: 'user' | 'admin') => void;
@@ -27,29 +27,45 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-purple-50 via-white to-violet-50 relative overflow-hidden">
+      {/* Floating background elements */}
+      <div className="absolute top-20 left-20 w-72 h-72 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse-soft"></div>
+      <div className="absolute top-40 right-20 w-72 h-72 bg-violet-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse-soft" style={{animationDelay: '2s'}}></div>
+      <div className="absolute -bottom-8 left-40 w-72 h-72 bg-pink-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse-soft" style={{animationDelay: '4s'}}></div>
+      
       <div className="max-w-md w-full">
-        <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+        <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl p-8 border border-white/20 animate-fade-in-scale relative overflow-hidden">
+          {/* Subtle gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-br from-white/50 to-transparent pointer-events-none"></div>
+          
           {/* Header */}
-          <div className="text-center mb-8">
-            <div className="bg-gradient-to-r from-purple-600 to-violet-600 rounded-full p-4 w-20 h-20 mx-auto mb-6 shadow-lg">
+          <div className="text-center mb-8 relative z-10">
+            <div className="bg-gradient-to-r from-purple-600 to-violet-600 rounded-full p-4 w-20 h-20 mx-auto mb-6 shadow-2xl floating relative">
               <Lock className="h-12 w-12 text-white" />
+              <div className="absolute -top-1 -right-1 w-6 h-6 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center">
+                <Sparkles className="h-3 w-3 text-white" />
+              </div>
             </div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Sistem Inventaris</h1>
-            <h2 className="text-xl font-semibold text-purple-600 mb-2">Permuridhis</h2>
-            <p className="text-gray-600 text-sm">Persatuan Mahasiswa-Mahasiswi UNRI Buddhis</p>
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent mb-2">
+              Sistem Inventaris
+            </h1>
+            <h2 className="text-xl font-semibold bg-gradient-to-r from-purple-600 to-violet-600 bg-clip-text text-transparent mb-2">
+              Permuridhis
+            </h2>
+            <p className="text-gray-600 text-sm font-medium">Persatuan Mahasiswa-Mahasiswi UNRI Buddhis</p>
           </div>
 
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6 flex items-center">
-              <div className="w-2 h-2 bg-red-500 rounded-full mr-3"></div>
-              {error}
+            <div className="bg-red-50/80 backdrop-blur-sm border border-red-200/50 text-red-700 px-4 py-3 rounded-xl mb-6 flex items-center animate-slide-in-right shadow-soft">
+              <div className="w-2 h-2 bg-red-500 rounded-full mr-3 animate-pulse"></div>
+              <span className="font-medium">{error}</span>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
             <div>
-              <label className="block text-gray-700 text-sm font-semibold mb-3">
+              <label className="block text-gray-700 text-sm font-semibold mb-3 flex items-center">
+                <Shield className="h-4 w-4 mr-2 text-purple-600" />
                 Masukkan Password Sistem
               </label>
               <div className="relative">
@@ -57,14 +73,14 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-4 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-lg"
+                  className="w-full px-4 py-4 pr-12 border border-gray-300/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all duration-300 text-lg bg-white/50 backdrop-blur-sm shadow-soft hover:shadow-lg font-medium"
                   placeholder="Password untuk mengakses sistem"
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-purple-600 transition-all duration-200 p-1 rounded-lg hover:bg-purple-50"
                 >
                   {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                 </button>
@@ -73,7 +89,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
 
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-purple-600 to-violet-600 text-white py-4 px-4 rounded-lg hover:from-purple-700 hover:to-violet-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-all duration-200 font-semibold shadow-lg text-lg"
+              className="w-full bg-gradient-to-r from-purple-600 to-violet-600 text-white py-4 px-4 rounded-xl hover:from-purple-700 hover:to-violet-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-all duration-300 font-semibold shadow-xl text-lg transform hover:-translate-y-0.5 hover:shadow-2xl ripple relative overflow-hidden"
             >
               <div className="flex items-center justify-center">
                 <LogIn className="h-5 w-5 mr-2" />
@@ -83,16 +99,18 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
           </form>
 
           {/* Demo Info */}
-          <div className="mt-8 pt-6 border-t border-gray-200">
+          <div className="mt-8 pt-6 border-t border-gray-200/50 relative z-10">
             <div className="space-y-3">
-              <div className="bg-purple-50 rounded-lg p-4 border border-purple-200">
-                <p className="text-sm text-purple-800 text-center">
-                  <strong>Password User:</strong> <code className="bg-purple-100 px-2 py-1 rounded">permuridhis2025</code>
+              <div className="bg-purple-50/80 backdrop-blur-sm rounded-xl p-4 border border-purple-200/50 shadow-soft hover:shadow-lg transition-all duration-300 card-hover">
+                <p className="text-sm text-purple-800 text-center font-medium">
+                  <strong className="font-bold">Password User:</strong> 
+                  <code className="bg-purple-100/80 px-3 py-1.5 rounded-lg ml-2 font-mono text-xs font-bold">permuridhis2025</code>
                 </p>
               </div>
-              <div className="bg-violet-50 rounded-lg p-4 border border-violet-200">
-                <p className="text-sm text-violet-800 text-center">
-                  <strong>Password Admin:</strong> <code className="bg-violet-100 px-2 py-1 rounded">admin_permuridhis2025</code>
+              <div className="bg-violet-50/80 backdrop-blur-sm rounded-xl p-4 border border-violet-200/50 shadow-soft hover:shadow-lg transition-all duration-300 card-hover">
+                <p className="text-sm text-violet-800 text-center font-medium">
+                  <strong className="font-bold">Password Admin:</strong> 
+                  <code className="bg-violet-100/80 px-3 py-1.5 rounded-lg ml-2 font-mono text-xs font-bold">admin_permuridhis2025</code>
                 </p>
               </div>
             </div>
