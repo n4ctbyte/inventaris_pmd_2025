@@ -113,6 +113,9 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
                   <code className="bg-violet-100/80 px-3 py-1.5 rounded-lg ml-2 font-mono text-xs font-bold">admin_permuridhis2025</code>
                 </p>
               </div>
+              <div>
+                <p className="text-gray-600 text-sm font-medium text-center">Dibuat dengan ❤️ oleh Divisi Human Resource and Equipment</p>
+              </div>
             </div>
           </div>
         </div>
