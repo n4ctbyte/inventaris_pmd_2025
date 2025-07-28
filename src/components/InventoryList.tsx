@@ -75,7 +75,6 @@ const InventoryList: React.FC = () => {
             <h2 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent mb-1">
               Daftar Inventaris
             </h2>
-            <p className="text-gray-600 font-medium">Kelola dan pinjam barang inventaris organisasi</p>
           </div>
         </div>
         <button

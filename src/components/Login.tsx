@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { LogIn, Eye, EyeOff, Lock, Sparkles, Shield } from 'lucide-react';
+import { LogIn, Eye, EyeOff, Lock, Sparkles, Shield, Heart } from 'lucide-react';
 
 interface LoginProps {
   onLogin: (userType: 'user' | 'admin') => void;
@@ -52,7 +52,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
             <h2 className="text-xl font-semibold bg-gradient-to-r from-purple-600 to-violet-600 bg-clip-text text-transparent mb-2">
               Permuridhis
             </h2>
-            <p className="text-gray-600 text-sm font-medium">Persatuan Mahasiswa-Mahasiswi UNRI Buddhis</p>
+            <p className="text-gray-600 text-sm font-medium">Persaudaraan Mahasiswa-Mahasiswi UNRI Buddhis</p>
           </div>
 
           {error && (
@@ -66,7 +66,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
             <div>
               <label className="block text-gray-700 text-sm font-semibold mb-3 flex items-center">
                 <Shield className="h-4 w-4 mr-2 text-purple-600" />
-                Masukkan Password Sistem
+                Masukkan Password User/Admin
               </label>
               <div className="relative">
                 <input
@@ -74,7 +74,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full px-4 py-4 pr-12 border border-gray-300/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all duration-300 text-lg bg-white/50 backdrop-blur-sm shadow-soft hover:shadow-lg font-medium"
-                  placeholder="Password untuk mengakses sistem"
+                  placeholder="Masukkan Password"
                   required
                 />
                 <button
@@ -93,12 +93,14 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
             >
               <div className="flex items-center justify-center">
                 <LogIn className="h-5 w-5 mr-2" />
-                Masuk ke Sistem
+                Masuk
               </div>
             </button>
           </form>
               <div>
-                <p className="text-gray-600 text-sm font-medium text-center mt-4 ">Dibuat dengan ❤️ oleh Divisi Human Resource and Equipment</p>
+                <p className="text-gray-600 text-sm font-medium text-center mt-4">
+                  Dibuat dengan <Heart className="inline w-4 h-4 text-red-500 mx-1 fill-red-500" /> oleh Divisi Human Resource and Equipment
+                </p>
               </div>
             </div>
           </div>
