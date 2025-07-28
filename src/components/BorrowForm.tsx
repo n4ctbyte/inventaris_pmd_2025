@@ -105,7 +105,7 @@ const BorrowForm: React.FC<BorrowFormProps> = ({ item, onSuccess, onCancel }) =>
         )}
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 flex-1 overflow-y-auto relative z-10">
+        <form onSubmit={handleSubmit} className="p-6 relative z-10">
           <div className="space-y-6">
             <div>
               <label className="flex items-center text-gray-700 text-sm font-semibold mb-3">
@@ -162,7 +162,7 @@ const BorrowForm: React.FC<BorrowFormProps> = ({ item, onSuccess, onCancel }) =>
             </div>
           </div>
 
-          <div className="flex space-x-3 mt-8 sticky bottom-0 bg-white/95 backdrop-blur-sm pt-4 border-t border-gray-100/50">
+          <div className="flex space-x-3 mt-8">
             <button
               type="button"
               onClick={onCancel}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import BorrowForm from './BorrowForm';
 import ReturnForm from './ReturnForm';
-import { Package, Plus, Minus, Search, Filter, Box, Sparkles, TrendingUp } from 'lucide-react';
+import { Package, Plus, Minus, Search, Filter, Box, Sparkles, TrendingUp, CheckCircle } from 'lucide-react';
 import { getItems, Item } from '../utils/storage';
 
 const InventoryList: React.FC = () => {
@@ -12,6 +12,7 @@ const InventoryList: React.FC = () => {
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [stockFilter, setStockFilter] = useState('all');
+  const [successMessage, setSuccessMessage] = useState('');
 
   const fetchItems = () => {
     const itemsData = getItems();
@@ -51,11 +52,15 @@ const InventoryList: React.FC = () => {
     setShowBorrowForm(false);
     setSelectedItem(null);
     fetchItems();
+    setSuccessMessage('Barang berhasil dipinjam! 🎉');
+    setTimeout(() => setSuccessMessage(''), 5000);
   };
 
   const handleReturnSuccess = () => {
     setShowReturnForm(false);
     fetchItems();
+    setSuccessMessage('Barang berhasil dikembalikan! ✅');
+    setTimeout(() => setSuccessMessage(''), 5000);
   };
 
   return (
@@ -81,6 +86,14 @@ const InventoryList: React.FC = () => {
           Kembalikan Barang
         </button>
       </div>
+
+      {/* Success Message */}
+      {successMessage && (
+        <div className="fixed top-4 right-4 bg-green-500/95 backdrop-blur-sm text-white px-6 py-4 rounded-xl shadow-2xl border border-green-400/50 z-50 animate-slide-in-right flex items-center">
+          <CheckCircle className="h-5 w-5 mr-3 animate-pulse" />
+          <span className="font-semibold">{successMessage}</span>
+        </div>
+      )}
 
       {/* Search and Filter */}
       <div className="bg-gradient-to-r from-gray-50/80 to-white/80 backdrop-blur-sm rounded-2xl p-6 mb-8 border border-gray-200/50 shadow-soft animate-slide-in-right">

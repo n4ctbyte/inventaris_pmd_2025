@@ -88,30 +88,8 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout, userType }) => {
       </nav>
 
       <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 relative z-10">
-        {/* Welcome Header */}
-        <div className="mb-8 animate-fade-in-up">
-          <div className="bg-gradient-to-r from-purple-600 to-violet-600 rounded-3xl p-8 text-white shadow-2xl relative overflow-hidden">
-            {/* Decorative elements */}
-            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
-            <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-12 -translate-x-12"></div>
-            
-            <div className="flex items-center justify-between">
-              <div className="relative z-10">
-                <h1 className="text-2xl sm:text-3xl font-bold mb-2 flex items-center">
-                  Sistem Inventaris Permuridhis 📦
-                  <Zap className="h-8 w-8 ml-3 text-yellow-300 animate-pulse" />
-                </h1>
-                <p className="text-purple-100 font-medium opacity-90">Kelola inventaris dengan mudah dan efisien</p>
-              </div>
-              <div className="hidden sm:block">
-                <Sparkles className="h-16 w-16 text-purple-200 floating" />
-              </div>
-            </div>
-          </div>
-        </div>
-
         {/* Main Content */}
-        <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 overflow-hidden animate-fade-in-scale">
+        <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 overflow-hidden animate-fade-in-scale mt-6">
           {/* Tab Navigation */}
           <div className="border-b border-gray-200/50 bg-gradient-to-r from-gray-50/80 to-white/80 backdrop-blur-sm">
             <nav className="flex overflow-x-auto">

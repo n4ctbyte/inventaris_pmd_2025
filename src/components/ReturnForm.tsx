@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
+import { X, Minus } from 'lucide-react';
 import { Borrowing, getBorrowings, updateBorrowing, getItems, saveItems } from '../utils/storage';
 
 interface ReturnFormProps {
@@ -73,32 +73,33 @@ const ReturnForm: React.FC<ReturnFormProps> = ({ onSuccess, onCancel }) => {
         </div>
 
         {borrowings.length === 0 ? (
-          <div className="text-center py-8">
-            <p className="text-gray-600">Tidak ada barang yang sedang dipinjam</p>
+          <div className="text-center py-8 relative z-10">
+            <p className="text-gray-600 font-medium">Tidak ada barang yang sedang dipinjam</p>
             <button
               onClick={onCancel}
-              className="mt-4 bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400"
+              className="mt-4 bg-gray-100/80 text-gray-700 py-3 px-6 rounded-xl hover:bg-gray-200/80 font-semibold transition-all duration-300 shadow-soft hover:shadow-lg transform hover:-translate-y-0.5"
             >
               Tutup
             </button>
           </div>
         ) : (
-          <>
+          <div className="relative z-10">
             {error && (
-              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-                {error}
+              <div className="bg-red-50/80 backdrop-blur-sm border border-red-200/50 text-red-700 px-4 py-3 rounded-xl mb-4 flex items-center shadow-soft animate-slide-in-right">
+                <div className="w-2 h-2 bg-red-500 rounded-full mr-3 animate-pulse"></div>
+                <span className="font-medium">{error}</span>
               </div>
             )}
 
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} className="space-y-6">
               <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2">
+                <label className="block text-gray-700 text-sm font-semibold mb-3">
                   Pilih Barang yang Dikembalikan
                 </label>
                 <select
                   value={selectedBorrowing}
                   onChange={(e) => setSelectedBorrowing(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-purple-500"
+                  className="w-full px-4 py-3 border border-gray-300/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500/50 transition-all duration-300 bg-white/70 backdrop-blur-sm shadow-soft hover:shadow-lg font-medium"
                   required
                 >
                   <option value="">-- Pilih Barang --</option>
@@ -111,13 +112,13 @@ const ReturnForm: React.FC<ReturnFormProps> = ({ onSuccess, onCancel }) => {
               </div>
 
               <div className="mb-6">
-                <label className="block text-gray-700 text-sm font-bold mb-2">
+                <label className="block text-gray-700 text-sm font-semibold mb-3">
                   Kondisi Barang
                 </label>
                 <textarea
                   value={conditionNote}
                   onChange={(e) => setConditionNote(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-purple-500"
+                  className="w-full px-4 py-3 border border-gray-300/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500/50 transition-all duration-300 resize-none bg-white/70 backdrop-blur-sm shadow-soft hover:shadow-lg font-medium"
                   rows={3}
                   placeholder="Contoh: Kondisi baik, Rusak di bagian layar, Hilang kabel charger, dll."
                   required
@@ -128,20 +129,25 @@ const ReturnForm: React.FC<ReturnFormProps> = ({ onSuccess, onCancel }) => {
                 <button
                   type="button"
                   onClick={onCancel}
-                  className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400"
+                  className="flex-1 bg-gray-100/80 text-gray-700 py-3 px-4 rounded-xl hover:bg-gray-200/80 font-semibold transition-all duration-300 min-h-[48px] shadow-soft hover:shadow-lg transform hover:-translate-y-0.5"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex-1 bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 disabled:opacity-50"
+                  className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 text-white py-3 px-4 rounded-xl hover:from-green-700 hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed font-semibold transition-all duration-300 shadow-xl min-h-[48px] transform hover:-translate-y-0.5 hover:shadow-2xl ripple relative overflow-hidden"
                 >
-                  {loading ? 'Memproses...' : 'Kembalikan'}
+                  {loading ? (
+                    <div className="flex items-center justify-center">
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                      Memproses...
+                    </div>
+                  ) : 'Kembalikan'}
                 </button>
               </div>
             </form>
-          </>
+          </div>
         )}
       </div>
     </div>
