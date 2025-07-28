@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { LogIn, Eye, EyeOff, Lock, Sparkles, Shield, Heart } from 'lucide-react';
+import pmdIcon from '../assets/pmd_icon.png'
 
 interface LoginProps {
   onLogin: (userType: 'user' | 'admin') => void;
@@ -40,12 +41,13 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
           
           {/* Header */}
           <div className="text-center mb-8 relative z-10">
-            <div className="bg-gradient-to-r from-purple-600 to-violet-600 rounded-full p-4 w-20 h-20 mx-auto mb-6 shadow-2xl floating relative">
-              <Lock className="h-12 w-12 text-white" />
-              <div className="absolute -top-1 -right-1 w-6 h-6 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center">
-                <Sparkles className="h-3 w-3 text-white" />
-              </div>
-            </div>
+            <div className="bg-gradient-to-r from-purple-600 to-violet-600 rounded-full p-1 w-28 h-28 mx-auto mb-6 shadow-2xl floating relative">
+            <img
+              src={pmdIcon}
+              alt="Logo Permuridhis"
+              className="h-full w-full object-cover rounded-full"
+            />
+          </div>
             <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent mb-2">
               Sistem Inventaris
             </h1>

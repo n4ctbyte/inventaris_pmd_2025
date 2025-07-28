@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Edit, Trash2, X } from 'lucide-react';
 import { Item, getItems, addItem, updateItem, deleteItem } from '../utils/storage';
+import ReactDOM from 'react-dom'
 
 const ItemManagement: React.FC = () => {
   const [items, setItems] = useState<Item[]>([]);
@@ -86,7 +87,7 @@ const ItemManagement: React.FC = () => {
         </div>
       )}
 
-      {showForm && (
+      {showForm && ReactDOM.createPortal(
         <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-50 p-4 animate-fade-in-scale">
           <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
             <div className="flex justify-between items-center mb-4">
@@ -143,7 +144,8 @@ const ItemManagement: React.FC = () => {
               </div>
             </form>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       <div className="bg-white rounded-lg shadow overflow-x-auto">
