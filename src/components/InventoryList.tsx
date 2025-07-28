@@ -53,7 +53,7 @@ const InventoryList: React.FC = () => {
     setSelectedItem(null);
     fetchItems();
     setSuccessMessage('Barang berhasil dipinjam! 🎉');
-    setTimeout(() => setSuccessMessage(''), 5000);
+    setTimeout(() => setSuccessMessage(''), 2000);
   };
 
   const handleReturnSuccess = () => {
@@ -89,14 +89,14 @@ const InventoryList: React.FC = () => {
 
       {/* Success Message */}
       {successMessage && (
-        <div className="fixed top-4 right-4 bg-green-500/95 backdrop-blur-sm text-white px-6 py-4 rounded-xl shadow-2xl border border-green-400/50 z-50 animate-slide-in-right flex items-center">
-          <CheckCircle className="h-5 w-5 mr-3 animate-pulse" />
-          <span className="font-semibold">{successMessage}</span>
-        </div>
-      )}
+  <div className="fixed top-6 justify-items-center bg-green-500/95 backdrop-blur-md text-white px-6 py-3 rounded-xl shadow-lg border border-green-400/50 z-[100] animate-slide-in-down flex items-center">
+    <CheckCircle className="h-5 w-5 mr-2 animate-pulse" />
+    <span className="font-semibold">{successMessage}</span>
+  </div>
+)}
 
       {/* Search and Filter */}
-      <div className="bg-gradient-to-r from-gray-50/80 to-white/80 backdrop-blur-sm rounded-2xl p-6 mb-8 border border-gray-200/50 shadow-soft animate-slide-in-right">
+      <div className="bg-gradient-to-r from-gray-50/80 to-white/80 backdrop-blur-sm rounded-2xl p-6 mb-8 border border-gray-200/50 shadow-soft animate-slide-in-down">
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex-1 relative">
             <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5 transition-colors duration-200" />
@@ -167,9 +167,6 @@ const InventoryList: React.FC = () => {
               <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-purple-900 transition-colors duration-200">
                 {item.name}
               </h3>
-              <p className="text-gray-600 mb-6 text-sm line-clamp-3 font-medium leading-relaxed">
-                {item.description}
-              </p>
               
               <div className="flex items-center justify-between">
                 <div className="flex items-center text-gray-700">

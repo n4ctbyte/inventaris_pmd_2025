@@ -70,11 +70,19 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout, userType }) => {
             
             <div className="flex items-center space-x-4">
               {userType === 'admin' && (
+              <>
+                {/* versi mobile: hanya icon */}
+                <div className="flex sm:hidden items-center bg-amber-500/20 px-2 py-1 rounded-lg border border-amber-400/30 shadow-md">
+                  <Crown className="h-4 w-4 text-amber-200" />
+                </div>
+
+                {/* versi desktop: icon + tulisan */}
                 <div className="hidden sm:flex items-center bg-amber-500/20 backdrop-blur-sm px-4 py-2 rounded-xl border border-amber-400/30 shadow-lg animate-slide-in-right">
                   <Crown className="h-4 w-4 mr-2 text-amber-200" />
                   <span className="text-sm font-semibold text-amber-100">Administrator</span>
                 </div>
-              )}
+              </>
+            )}
               <button
                 onClick={onLogout}
                 className="bg-white/10 hover:bg-white/20 backdrop-blur-sm px-4 py-2 rounded-xl transition-all duration-300 flex items-center font-semibold border border-white/20 hover:border-white/30 shadow-lg transform hover:-translate-y-0.5 hover:shadow-xl"

@@ -30,7 +30,7 @@ const AdminPanel: React.FC = () => {
       </div>
 
       <div className="border-b border-gray-200 mb-6">
-        <nav className="-mb-px flex">
+        <nav className="-mb-px flex overflow-x-auto scrollbar-hide whitespace-nowrap">
           {tabs.map((tab) => {
             const Icon = tab.icon;
             return (

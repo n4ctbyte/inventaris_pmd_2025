@@ -8,7 +8,6 @@ const ItemManagement: React.FC = () => {
   const [editingItem, setEditingItem] = useState<Item | null>(null);
   const [formData, setFormData] = useState({
     name: '',
-    description: '',
     stock: 0,
   });
   const [success, setSuccess] = useState('');
@@ -26,16 +25,16 @@ const ItemManagement: React.FC = () => {
     e.preventDefault();
 
     if (editingItem) {
-      updateItem(editingItem.id, formData);
+      updateItem(editingItem.id, { ...formData, description: editingItem.description });
       setSuccess('Barang berhasil diubah');
     } else {
-      addItem(formData);
+      addItem({ ...formData, description: '' });
       setSuccess('Barang berhasil ditambahkan');
     }
 
     setShowForm(false);
     setEditingItem(null);
-    setFormData({ name: '', description: '', stock: 0 });
+    setFormData({ name: '', stock: 0 });
     fetchItems();
 
     setTimeout(() => setSuccess(''), 3000);
@@ -45,7 +44,6 @@ const ItemManagement: React.FC = () => {
     setEditingItem(item);
     setFormData({
       name: item.name,
-      description: item.description,
       stock: item.stock,
     });
     setShowForm(true);
@@ -66,7 +64,7 @@ const ItemManagement: React.FC = () => {
   const resetForm = () => {
     setShowForm(false);
     setEditingItem(null);
-    setFormData({ name: '', description: '', stock: 0 });
+    setFormData({ name: '', stock: 0 });
   };
 
   return (
@@ -89,7 +87,7 @@ const ItemManagement: React.FC = () => {
       )}
 
       {showForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-50 p-4 animate-fade-in-scale">
           <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
             <div className="flex justify-between items-center mb-4">
               <h4 className="text-lg font-semibold">
@@ -111,18 +109,6 @@ const ItemManagement: React.FC = () => {
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-purple-500"
                   required
-                />
-              </div>
-
-              <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2">
-                  Deskripsi
-                </label>
-                <textarea
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-purple-500"
-                  rows={3}
                 />
               </div>
 
@@ -160,15 +146,12 @@ const ItemManagement: React.FC = () => {
         </div>
       )}
 
-      <div className="bg-white rounded-lg shadow overflow-hidden">
+      <div className="bg-white rounded-lg shadow overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Nama Barang
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Deskripsi
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Stok
@@ -183,9 +166,6 @@ const ItemManagement: React.FC = () => {
               <tr key={item.id}>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm font-medium text-gray-900">{item.name}</div>
-                </td>
-                <td className="px-6 py-4">
-                  <div className="text-sm text-gray-900">{item.description}</div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm text-gray-900">{item.stock}</div>
