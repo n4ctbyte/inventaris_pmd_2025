@@ -10,16 +10,9 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-
-  // ==================================================================
-  // --- KEMBALI KE METODE SEDERHANA TAPI LEBIH AMAN ---
-  // ==================================================================
   
-  // Ini adalah password Anda yang sudah disamarkan (dienkode Base64).
-  // 'permuridhis2025' -> 'cGVybXVyaWRoaXMyMDI1'
-  const OBFUSCATED_USER_PASS = 'cGVybXVyaWRoaXMyMDI1'; 
-  // 'admin_permuridhis2025' -> 'YWRtaW5fcGVybXVyaWRoaXMyMDI1'
-  const OBFUSCATED_ADMIN_PASS = 'YWRtaW5fcGVybXVyaWRoaXMyMDI1';
+  const OBFUSCATED_USER_PASS = 'cG11MjU='; 
+  const OBFUSCATED_ADMIN_PASS = 'NGRtcG11MjU=';
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
