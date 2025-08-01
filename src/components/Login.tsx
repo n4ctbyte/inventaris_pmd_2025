@@ -12,10 +12,9 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   
-  // PASTIKAN INI ADALAH URL BARU YANG ANDA BUAT DI LANGKAH SEBELUMNYA
+  // URL API Anda. Pastikan ini adalah URL dari deployment Apps Script TERBARU.
   const API_URL = 'https://script.google.com/macros/s/AKfycbyjgRZqqlkKlSOyeuqzoQSGwD-3Q8GMC8--N8_HzFoIrXa-a2e-Q2iy5BhPtAn_PmCOVA/exec';
 
-  // useRef untuk menunjuk ke elemen form di JSX
   const formRef = useRef<HTMLFormElement>(null );
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -23,26 +22,31 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
     setError('');
     setIsLoading(true);
 
-    // Kirim form secara tradisional ke target iframe
     if (formRef.current) {
       formRef.current.submit();
     }
 
-    // Pasang timeout untuk menangani jika server tidak merespons sama sekali
     const timeoutId = setTimeout(() => {
       setIsLoading(false);
       setError("Waktu habis. Server tidak merespons, periksa URL API atau koneksi.");
-    }, 15000); // Timeout 15 detik
+    }, 15000);
 
-    // Buat listener untuk "mendengarkan" pesan yang dikirim kembali oleh Apps Script
     const handleMessage = (event: MessageEvent) => {
-      // Pastikan event.data ada dan merupakan string
-      if (typeof event.data !== 'string') return;
+      // ==================================================================
+      // --- PERUBAHAN UTAMA ADA DI BLOK INI ---
+      // ==================================================================
+      
+      // 1. Kita periksa apakah event.data adalah string dan mengandung kata kunci 'success'.
+      //    Ini cara yang lebih longgar untuk memvalidasi pesan yang masuk,
+      //    yang akan menyelesaikan error "dropping postMessage".
+      if (typeof event.data !== 'string' || !event.data.includes('"success"')) {
+        return; // Abaikan pesan yang tidak relevan
+      }
 
-      clearTimeout(timeoutId); // Batalkan timeout karena respons sudah diterima
+      clearTimeout(timeoutId);
       
       try {
-        // Karena kita mengirim stringified JSON, kita perlu parse dua kali
+        // 2. Kita tidak lagi mem-parse dua kali. Cukup sekali.
         const result = JSON.parse(event.data);
         
         if (result.success) {
@@ -58,18 +62,15 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
         setError("Gagal memproses respons dari server.");
       } finally {
         setIsLoading(false);
-        // Hapus listener setelah selesai agar tidak menumpuk
         window.removeEventListener('message', handleMessage);
       }
     };
 
-    // Mulai mendengarkan pesan
     window.addEventListener('message', handleMessage, false);
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-purple-50 via-white to-violet-50 relative overflow-hidden">
-      {/* Floating background elements */}
       <div className="absolute top-20 left-20 w-72 h-72 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse-soft"></div>
       <div className="absolute top-40 right-20 w-72 h-72 bg-violet-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse-soft" style={{ animationDelay: '2s' }}></div>
       <div className="absolute -bottom-8 left-40 w-72 h-72 bg-pink-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse-soft" style={{ animationDelay: '4s' }}></div>
@@ -93,7 +94,6 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
             </div>
           )}
 
-          {/* Form sekarang memiliki ref, action, method, dan target */}
           <form ref={formRef} action={API_URL} method="post" target="response_iframe" onSubmit={handleSubmit} className="space-y-6 relative z-10">
             <div>
               <label className="block text-gray-700 text-sm font-semibold mb-3 flex items-center">
@@ -101,17 +101,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
                 Masukkan Password User/Admin
               </label>
               <div className="relative">
-                {/* Input password sekarang WAJIB punya atribut 'name' */}
-                <input
-                  name="password"
-                  type={showPassword ? 'text' : 'password'}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-4 pr-12 border border-gray-300/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all duration-300 text-lg bg-white/50 backdrop-blur-sm shadow-soft hover:shadow-lg font-medium"
-                  placeholder="Masukkan Password"
-                  required
-                  disabled={isLoading}
-                />
+                <input name="password" type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} className="w-full px-4 py-4 pr-12 border border-gray-300/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all duration-300 text-lg bg-white/50 backdrop-blur-sm shadow-soft hover:shadow-lg font-medium" placeholder="Masukkan Password" required disabled={isLoading} />
                 <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-purple-600 transition-all duration-200 p-1 rounded-lg hover:bg-purple-50" disabled={isLoading}>
                   {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                 </button>
@@ -134,7 +124,6 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
           </div>
         </div>
       </div>
-      {/* Iframe tersembunyi untuk menerima respons dari form. Ini adalah kunci dari solusinya. */}
       <iframe name="response_iframe" style={{ display: 'none' }}></iframe>
     </div>
   );
