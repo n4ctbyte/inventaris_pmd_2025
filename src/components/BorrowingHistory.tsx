@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, Package, ArrowRight, User, Eye, EyeOff, History } from 'lucide-react';
-import { Borrowing, getBorrowings } from '../utils/storage';
+import { Borrowing, getBorrowings, deleteBorrowing } from '../utils/storage';
 
 interface BorrowingHistoryProps {
   userType?: 'user' | 'admin';
@@ -17,6 +17,13 @@ const BorrowingHistory: React.FC<BorrowingHistoryProps> = ({ userType = 'user' }
     );
     setBorrowings(sortedBorrowings);
   }, []);
+
+  const handleDelete = (id: number) => {
+    if (window.confirm("Apakah Anda yakin ingin menghapus riwayat peminjaman ini?")) {
+      deleteBorrowing(id);
+      setBorrowings(borrowings.filter(borrowing => borrowing.id !== id));
+    }
+  };
 
   const isAdmin = userType === 'admin';
 
@@ -89,15 +96,26 @@ const BorrowingHistory: React.FC<BorrowingHistoryProps> = ({ userType = 'user' }
                         {borrowing.item_name}
                       </h3>
                     </div>
-                    <span
-                      className={`px-3 py-1.5 rounded-full text-sm font-bold shadow-soft ${
-                        borrowing.status === 'borrowed'
-                          ? 'bg-yellow-100/80 text-yellow-800'
-                          : 'bg-green-100/80 text-green-800'
-                      }`}
-                    >
-                      {borrowing.status === 'borrowed' ? 'Sedang Dipinjam' : 'Sudah Dikembalikan'}
-                    </span>
+                    <div className="flex items-center space-x-2">
+                      <span
+                        className={`px-3 py-1.5 rounded-full text-sm font-bold shadow-soft ${
+                          borrowing.status === 'borrowed'
+                            ? 'bg-yellow-100/80 text-yellow-800'
+                            : 'bg-green-100/80 text-green-800'
+                        }`}
+                      >
+                        {borrowing.status === 'borrowed' ? 'Sedang Dipinjam' : 'Sudah Dikembalikan'}
+                      </span>
+                      {isAdmin && (
+                        <button
+                          onClick={() => handleDelete(borrowing.id)}
+                          className="bg-red-100/80 text-red-700 hover:bg-red-200/80 shadow-lg px-3 py-1.5 rounded-full text-sm font-bold transition-all duration-300 transform hover:-translate-y-0.5"
+                          title="Hapus Riwayat Peminjaman"
+                        >
+                          Hapus
+                        </button>
+                      )}
+                    </div>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

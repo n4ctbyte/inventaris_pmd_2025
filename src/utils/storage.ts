@@ -142,6 +142,16 @@ export const updateBorrowing = (id: number, borrowingData: Partial<Borrowing>): 
   return true;
 };
 
+export const deleteBorrowing = (id: number): boolean => {
+  const borrowings = getBorrowings();
+  const filteredBorrowings = borrowings.filter(borrowing => borrowing.id !== id);
+  
+  if (filteredBorrowings.length === borrowings.length) return false;
+  
+  saveBorrowings(filteredBorrowings);
+  return true;
+};
+
 // Next ID management
 const getNextId = () => {
   const nextId = localStorage.getItem('inventaris_next_id');
