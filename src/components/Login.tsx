@@ -13,7 +13,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
   const [isLoading, setIsLoading] = useState(false);
   
   // PASTIKAN INI ADALAH URL BARU YANG ANDA BUAT DI LANGKAH SEBELUMNYA
-  const API_URL = 'https://script.google.com/macros/s/AKfycbwC9UP3XjmQcAUd2qevUeMdt05rA-QM7rP-VD6NJc1VKcqxWsFBBYMX7Ja69DNoE4YyJg/exec';
+  const API_URL = 'https://script.google.com/macros/s/AKfycbyjgRZqqlkKlSOyeuqzoQSGwD-3Q8GMC8--N8_HzFoIrXa-a2e-Q2iy5BhPtAn_PmCOVA/exec';
 
   // useRef untuk menunjuk ke elemen form di JSX
   const formRef = useRef<HTMLFormElement>(null );
