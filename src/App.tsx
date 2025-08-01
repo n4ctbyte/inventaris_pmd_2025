@@ -1,38 +1,53 @@
-import React, { useState, useEffect } from 'react';
-import Login from './components/Login';
-import Dashboard from './components/Dashboard';
+import React, { useState, Suspense } from 'react';
+import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+
+// Kita hanya perlu me-lazy load Login dan Dashboard di sini
+const Login = React.lazy(() => import('./components/Login'));
+const Dashboard = React.lazy(() => import('./components/Dashboard'));
+
+// Komponen Fallback untuk Suspense
+const LoadingFallback = () => (
+  <div className="w-full h-screen flex flex-col items-center justify-center bg-gray-50">
+    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
+    <p className="mt-4 text-lg text-gray-600">Memuat...</p>
+  </div>
+);
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [userType, setUserType] = useState<'user' | 'admin'>('user');
-  const [loading, setLoading] = useState(false);
+  // Logika untuk menyimpan status login di localStorage
+  const getInitialUserType = (): 'user' | 'admin' | null => {
+    const storedUserType = localStorage.getItem('userType');
+    return storedUserType === 'user' || storedUserType === 'admin' ? storedUserType : null;
+  };
+
+  const [userType, setUserType] = useState<'user' | 'admin' | null>(getInitialUserType());
 
   const handleLogin = (type: 'user' | 'admin') => {
-    setIsAuthenticated(true);
+    localStorage.setItem('userType', type);
     setUserType(type);
   };
 
   const handleLogout = () => {
-    setIsAuthenticated(false);
-    setUserType('user');
+    localStorage.removeItem('userType');
+    setUserType(null);
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-violet-50 flex items-center justify-center">
-        <div className="text-lg">Memuat...</div>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-violet-50">
-      {isAuthenticated ? (
-        <Dashboard onLogout={handleLogout} userType={userType} />
-      ) : (
-        <Login onLogin={handleLogin} />
-      )}
-    </div>
+    <Router>
+      <Suspense fallback={<LoadingFallback />}>
+        <Routes>
+          <Route 
+            path="/login" 
+            element={!userType ? <Login onLogin={handleLogin} /> : <Navigate to="/" />} 
+          />
+          {/* Semua path lainnya akan ditangani oleh Dashboard */}
+          <Route 
+            path="/*" 
+            element={userType ? <Dashboard userType={userType} onLogout={handleLogout} /> : <Navigate to="/login" />} 
+          />
+        </Routes>
+      </Suspense>
+    </Router>
   );
 }
 

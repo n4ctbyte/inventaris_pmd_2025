@@ -26,26 +26,14 @@ const initializeData = () => {
   const defaultItems: Item[] = [
     {
       id: 1,
-      name: 'Proyektor Epson EB-X41',
-      description: 'Proyektor berkualitas tinggi untuk presentasi dan kegiatan seminar dengan resolusi XGA 1024x768',
+      name: 'Proyektor',
+      description: 'Proyektor',
       stock: 2,
       created_at: new Date().toISOString()
     },
   ];
 
   const defaultBorrowings: Borrowing[] = [
-    {
-      id: 1,
-      item_id: 3,
-      item_name: 'Speaker Bluetooth JBL Charge 4',
-      quantity: 1,
-      purpose: 'Kegiatan seminar Dharma dan Kehidupan Modern',
-      borrower_name: 'Ahmad Budi Santoso',
-      borrow_date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-      return_date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-      condition_note: 'Kondisi baik, tidak ada kerusakan',
-      status: 'returned'
-    },
   ];
 
   if (!localStorage.getItem('inventaris_items')) {
