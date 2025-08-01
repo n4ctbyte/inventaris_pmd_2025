@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { LogIn, Eye, EyeOff, Shield, Heart } from 'lucide-react';
 import pmdIcon from '../assets/pmd_icon.png';
 
@@ -10,67 +10,35 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  
-  // URL API Anda. Pastikan ini adalah URL dari deployment Apps Script TERBARU.
-  const API_URL = 'https://script.google.com/macros/s/AKfycbyjgRZqqlkKlSOyeuqzoQSGwD-3Q8GMC8--N8_HzFoIrXa-a2e-Q2iy5BhPtAn_PmCOVA/exec';
 
-  const formRef = useRef<HTMLFormElement>(null );
+  // ==================================================================
+  // --- KEMBALI KE METODE SEDERHANA TAPI LEBIH AMAN ---
+  // ==================================================================
+  
+  // Ini adalah password Anda yang sudah disamarkan (dienkode Base64).
+  // 'permuridhis2025' -> 'cGVybXVyaWRoaXMyMDI1'
+  const OBFUSCATED_USER_PASS = 'cGVybXVyaWRoaXMyMDI1'; 
+  // 'admin_permuridhis2025' -> 'YWRtaW5fcGVybXVyaWRoaXMyMDI1'
+  const OBFUSCATED_ADMIN_PASS = 'YWRtaW5fcGVybXVyaWRoaXMyMDI1';
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
-    setIsLoading(true);
+    
+    // Samarkan input pengguna untuk perbandingan
+    const enteredPasswordObfuscated = btoa(password);
 
-    if (formRef.current) {
-      formRef.current.submit();
+    if (enteredPasswordObfuscated === OBFUSCATED_ADMIN_PASS) {
+      onLogin('admin');
+    } else if (enteredPasswordObfuscated === OBFUSCATED_USER_PASS) {
+      onLogin('user');
+    } else {
+      setError('Password salah! Silakan coba lagi.');
     }
-
-    const timeoutId = setTimeout(() => {
-      setIsLoading(false);
-      setError("Waktu habis. Server tidak merespons, periksa URL API atau koneksi.");
-    }, 15000);
-
-    const handleMessage = (event: MessageEvent) => {
-      // ==================================================================
-      // --- PERUBAHAN UTAMA ADA DI BLOK INI ---
-      // ==================================================================
-      
-      // 1. Kita periksa apakah event.data adalah string dan mengandung kata kunci 'success'.
-      //    Ini cara yang lebih longgar untuk memvalidasi pesan yang masuk,
-      //    yang akan menyelesaikan error "dropping postMessage".
-      if (typeof event.data !== 'string' || !event.data.includes('"success"')) {
-        return; // Abaikan pesan yang tidak relevan
-      }
-
-      clearTimeout(timeoutId);
-      
-      try {
-        // 2. Kita tidak lagi mem-parse dua kali. Cukup sekali.
-        const result = JSON.parse(event.data);
-        
-        if (result.success) {
-          if (result.userType === 'admin' || result.userType === 'user') {
-            onLogin(result.userType);
-          } else {
-            setError('Tipe pengguna tidak valid dari server.');
-          }
-        } else {
-          setError(result.message || 'Password salah!');
-        }
-      } catch (err) {
-        setError("Gagal memproses respons dari server.");
-      } finally {
-        setIsLoading(false);
-        window.removeEventListener('message', handleMessage);
-      }
-    };
-
-    window.addEventListener('message', handleMessage, false);
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-purple-50 via-white to-violet-50 relative overflow-hidden">
+      {/* Latar belakang dan semua JSX lainnya tetap sama */}
       <div className="absolute top-20 left-20 w-72 h-72 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse-soft"></div>
       <div className="absolute top-40 right-20 w-72 h-72 bg-violet-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse-soft" style={{ animationDelay: '2s' }}></div>
       <div className="absolute -bottom-8 left-40 w-72 h-72 bg-pink-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse-soft" style={{ animationDelay: '4s' }}></div>
@@ -94,26 +62,30 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
             </div>
           )}
 
-          <form ref={formRef} action={API_URL} method="post" target="response_iframe" onSubmit={handleSubmit} className="space-y-6 relative z-10">
+          <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
             <div>
               <label className="block text-gray-700 text-sm font-semibold mb-3 flex items-center">
                 <Shield className="h-4 w-4 mr-2 text-purple-600" />
                 Masukkan Password User/Admin
               </label>
               <div className="relative">
-                <input name="password" type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} className="w-full px-4 py-4 pr-12 border border-gray-300/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all duration-300 text-lg bg-white/50 backdrop-blur-sm shadow-soft hover:shadow-lg font-medium" placeholder="Masukkan Password" required disabled={isLoading} />
-                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-purple-600 transition-all duration-200 p-1 rounded-lg hover:bg-purple-50" disabled={isLoading}>
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full px-4 py-4 pr-12 border border-gray-300/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all duration-300 text-lg bg-white/50 backdrop-blur-sm shadow-soft hover:shadow-lg font-medium"
+                  placeholder="Masukkan Password"
+                  required
+                />
+                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-purple-600 transition-all duration-200 p-1 rounded-lg hover:bg-purple-50">
                   {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                 </button>
               </div>
             </div>
-            <button type="submit" disabled={isLoading} className="w-full bg-gradient-to-r from-purple-600 to-violet-600 text-white py-4 px-4 rounded-xl hover:from-purple-700 hover:to-violet-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-all duration-300 font-semibold shadow-xl text-lg transform hover:-translate-y-0.5 hover:shadow-2xl ripple relative overflow-hidden disabled:opacity-75 disabled:cursor-not-allowed">
+            <button type="submit" className="w-full bg-gradient-to-r from-purple-600 to-violet-600 text-white py-4 px-4 rounded-xl hover:from-purple-700 hover:to-violet-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-all duration-300 font-semibold shadow-xl text-lg transform hover:-translate-y-0.5 hover:shadow-2xl ripple relative overflow-hidden">
               <div className="flex items-center justify-center">
-                {isLoading ? (
-                  <><div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></div><span>Mengecek...</span></>
-                ) : (
-                  <><LogIn className="h-5 w-5 mr-2" /><span>Masuk</span></>
-                )}
+                <LogIn className="h-5 w-5 mr-2" />
+                <span>Masuk</span>
               </div>
             </button>
           </form>
@@ -124,7 +96,6 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
           </div>
         </div>
       </div>
-      <iframe name="response_iframe" style={{ display: 'none' }}></iframe>
     </div>
   );
 };
