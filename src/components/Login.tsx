@@ -13,7 +13,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
   const [isLoading, setIsLoading] = useState(false);
   
   // URL API dari Google Apps Script
-  const API_URL = 'https://script.google.com/macros/s/AKfycbxAScbRmUgTZCwvYeI-3bVNu4O3COVBp1BpZ68VjrPBwCWgx6XPZewE6olfo5KndP_oYA/exec';
+  const API_URL = 'https://script.google.com/macros/s/AKfycbxfZPTrT-MxBA1rDaWvLtoagFpscvW8pQE_DUtmYaifTBGoF5BnRdAaJizVN1VjC4U-PA/exec';
 
   const handleSubmit = async (e: React.FormEvent ) => {
     e.preventDefault();
